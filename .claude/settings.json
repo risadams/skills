@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Edit(~/.claude/skills/**)",
+      "Write(~/.claude/skills/**)",
+      "Bash(git:*)",
+      "Bash(find \"C:/Users/chris.adams/dev/gd-pkms/📅/\" -name \"*-M[0-9]*.md\" 2>/dev/null | head -10)",
+      "Read(//c/Users/chris.adams/dev/gd-pkms/📅/**)",
+      "Bash(mkdir -p _archive)",
+      "Bash(mv draft-mr-old *)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\chris.adams\\.claude\\skills"
+    ]
+  }
+}
