@@ -1,6 +1,6 @@
 ---
 name: daily-standup-prep
-description: Generate a per-team standup markdown report by gathering activity over the last N days from Jira, GitLab, Confluence, and a local Git repo. Maps activity to team members from a roster CSV, renders a Mermaid kanban + randomized talking order, and writes one file per team into the Obsidian vault. Use when the user says "daily standup prep", "standup report", "generate standup", "scrum prep", or invokes /daily-standup-prep.
+description: Generate a per-team standup markdown report by gathering activity over the last N days from Jira, GitLab, Confluence, and a local Git repo. Maps activity to team members from a roster CSV, renders a Mermaid kanban + randomized talking order, captures a `daily`-tagged sprint snapshot, and runs a clarity-council (infographics-expert burndown chart + statistics-expert forecast + scrum-master suggestions) for sprint pulse. Writes one file per team into the Obsidian vault. Use when the user says "daily standup prep", "standup report", "generate standup", "scrum prep", or invokes /daily-standup-prep.
 allowed-tools:
   - Read
   - Write
@@ -47,6 +47,7 @@ This skill is a Claude Code port of `D:\powershell-scripting\src\bin\Get-Standup
 | `Inc` | `25` | `-Inc` |
 | `Sprint` | `1` | `-Sprint` |
 | `IncludeJiraIssues` / `IncludeGitCommits` / `IncludeGitLabActivity` / `IncludeConfluenceActivity` / `IncludeKanbanDiagram` / `IncludeStandupOrder` | all `true` | same |
+| `IncludeSprintPulse` | `true` | new — runs Phase 4.5 (daily snapshot + council burndown/forecast/suggestions). Toggle off with `--no-sprint-pulse` |
 
 JIRA base, Confluence base, GitLab base + group, vault root, and template path are all **resolved from memory** — never accept them as args. See *Config resolution* below.
 
@@ -89,6 +90,7 @@ Per-team progress:
 - [ ] Phase 2: Compute window + auto-build JQL
 - [ ] Phase 3: Gather data (Jira, Git, GitLab, Confluence) — parallel
 - [ ] Phase 4: Match activity to team members + flag HasActivity
+- [ ] Phase 4.5: Sprint pulse — daily snapshot + council (burndown / forecast / suggestions)
 - [ ] Phase 5: Render section markdown + Mermaid kanban + talking order
 - [ ] Phase 6: Substitute template placeholders + write to vault
 - [ ] Phase 7: Console summary
@@ -133,6 +135,22 @@ Filter rules:
 - **Git/GitLab/Confluence inclusion** — keep an activity iff its author matches a team member.
 - Set `member.HasActivity = true` for any matched member, and append the activity to the member's `Issues / Commits / GitLabActivities / ConfluenceActivities` lists for the talking-order/per-member sections.
 
+### Phase 4.5 — Sprint pulse (daily snapshot + council)
+
+Skip entirely if `IncludeSprintPulse` is off — substitute empty strings for the three pulse placeholders in Phase 6.
+
+**Step 1 — Daily sprint snapshot.** Invoke the `sprint-snapshot` skill via `Skill` for the current team with `--phase "daily"`. This writes `daily.canvas` + `daily.md` to the team's current sprint folder (overwriting yesterday's `daily.*` is fine — the trend record lives in `_snapshots.jsonl`) and appends a row to that JSONL trend log. The JSONL is the burndown's data source. If `sprint-snapshot` fails (Jira down, sprint config missing, etc.), surface the failure in the console summary, render `_Sprint pulse unavailable — daily snapshot failed._` for `{{burndown_chart}}`, leave the other two pulse placeholders empty, and continue. Never fabricate trend data.
+
+**Step 2 — Read trend data.** Read the team's `_snapshots.jsonl` from `{{output_root}}\<TeamTitleCase>\Scrum 📅\INC {Inc}\Sprint {Sprint}\_snapshots.jsonl`. Parse the rows for the current sprint only (filter by `inc` + `sprint`). Extract `(snapshot_at, remaining, totals.points, by_status.done.points)` per row. Also pull `capacity`, `velocity.last`, and `velocity.avg3` from the most recent row. If the JSONL has fewer than 2 rows for this sprint, the burndown will be a single point — note this in the rendered output, do not fake additional data points.
+
+**Step 3 — Run clarity-council.** Invoke the `clarity-council` skill via `Skill` with three personas: `infographics-expert`, `statistics-expert`, `scrum-master`. Pass the parsed JSONL trend rows, sprint config (`StartDate`, `EndDate`, `Capacity`, `LastSprintVelocity`, `AvgVelocityLast3`), the day count (`day X of 21`), and the current matched-activity summary from Phase 4 as the council's shared context. Ask each persona for a tightly scoped artifact:
+
+- **infographics-expert** → render a Mermaid `xychart-beta` burndown chart. X-axis = sprint days (1–21 or actual sprint length). Y-axis = remaining points. Plot two lines: (1) the ideal line from `Capacity` at day 0 to `0` at the final day, (2) the actual line from the JSONL trend rows. Title: `<Team> Sprint <N> Burndown — day X of Y`. Persona must follow its own constraints (viewBox, accessible title, no chartjunk, direct labels over legend) — translated into Mermaid: title set, two named series (`Ideal`, `Actual`), no decorative styling. If only one trend row exists, render a single-point chart with a brief caption noting the trend will fill in over the sprint.
+- **statistics-expert** → produce a single-paragraph forecast: project end-of-sprint completed points using simple linear extrapolation from the trend, compare against `Capacity` and `velocity.avg3`, and state a confidence band (e.g. "tracking 5pts under commit, ±3pts based on 3-sprint variance"). Hard cap: ≤4 sentences. No charts — words only. Must explicitly call out if the trend data is too sparse to forecast (≤2 rows).
+- **scrum-master** → 1–3 actionable suggestions for the team based on the day's matched activity (Phase 4) + the snapshot bucket counts. Examples: "two tickets in In Review for >3 days — chase reviewers", "Ada has no activity tracked in 2 days — confirm not blocked", "WIP at 8 vs limit 5 — pull from Ready before starting new". Bullet list. No vague platitudes — each suggestion names a ticket, person, or measurable signal.
+
+**Step 4 — Capture artifacts.** Store the three council outputs as the strings `{{burndown_chart}}` (the Mermaid block including its `\`\`\`mermaid` fences), `{{forecast_note}}` (the statistics-expert paragraph, plain markdown), and `{{scrum_suggestions}}` (the bullet list, plain markdown). These feed Phase 6.
+
 ### Phase 5 — Render sections
 
 Each placeholder in the template gets a string built from the matched data. Formatter contracts (exact markdown shape) live in [REFERENCE.md](REFERENCE.md#section-formatters):
@@ -147,13 +165,16 @@ Each placeholder in the template gets a string built from the matched data. Form
 ### Phase 6 — Substitute and write
 
 1. `Read` `{{template_path}}`. The template is the user's master Standup template — never modify it.
-2. Replace placeholders **in this exact set** (matches the PS `ConvertTo-TemplateMarkdown` function): `{{date}}`, `{{team}}`, `{{sprint}}`, `{{increment}}`, `{{talking_order}}`, `{{jira_state}}`, `{{jira_issues}}`, `{{git_updates}}`, `{{confluence_updates}}`, `{{gitlab_updates}}`. Date format `YYYY-MM-DD` (Pittsburgh local). Team name written **TitleCase** (first char upper, rest lower) to match the PS `$formattedTeam` line.
+2. Replace placeholders **in this exact set** (matches the PS `ConvertTo-TemplateMarkdown` function plus the three Phase 4.5 additions): `{{date}}`, `{{team}}`, `{{sprint}}`, `{{increment}}`, `{{talking_order}}`, `{{jira_state}}`, `{{jira_issues}}`, `{{git_updates}}`, `{{confluence_updates}}`, `{{gitlab_updates}}`, `{{burndown_chart}}`, `{{forecast_note}}`, `{{scrum_suggestions}}`. Date format `YYYY-MM-DD` (Pittsburgh local). Team name written **TitleCase** (first char upper, rest lower) to match the PS `$formattedTeam` line. The three pulse placeholders are no-ops if the user's template doesn't reference them — the substitution still runs cleanly. Note this once when a template lacks them so the user knows to add them if they want the pulse rendered (e.g. under a `## Sprint Pulse` heading containing `{{burndown_chart}}`, then `### Forecast` `{{forecast_note}}`, then `### Suggestions` `{{scrum_suggestions}}`).
 3. Compute output path: `{{vault_root}}\Scrum Teams\<TeamTitleCase>\Scrum 📅\INC {Inc}\Sprint {Sprint}\YYYY-MM-DD.md` — note the `📅` emoji is preserved literally; forward slashes work fine in bash on Windows.
 4. `mkdir -p` the parent directory.
 5. **Never overwrite silently.** If the file exists, `Read` it, then `AskUserQuestion`: `Overwrite` / `Append as ## Re-run HH:MM section` / `Skip save`.
 6. `Write` the file. Print the saved path back as a clickable markdown link.
 
-**Sibling-skill delegation in Phase 6:**
+**Sibling-skill delegation in Phase 4.5 / Phase 6:**
+
+- The daily snapshot is **always delegated to `sprint-snapshot` via `Skill`** with `--phase "daily"`. Never reimplement Jira sprint fetching inline — `sprint-snapshot` owns the JQL, identity matching, capacity math, and the JSONL trend schema. If its phase derivation logic doesn't recognize `daily`, pass it through as an explicit `--phase` override (the skill already supports arbitrary phase strings via that flag).
+- The pulse council is **always delegated to `clarity-council` via `Skill`** with personas pinned to `infographics-expert + statistics-expert + scrum-master`. Do not author burndown SVG/Mermaid, forecast paragraphs, or suggestions inline — let each persona produce its own artifact under its own constraints.
 
 - If extending the template with new Obsidian Flavored Markdown constructs (callouts, embeds, dataview, block IDs, frontmatter properties beyond `Increment/Sprint/Date`), invoke **`obsidian-markdown`** via `Skill` rather than authoring the syntax inline — it's the canonical reference and stays in sync with vault conventions.
 - For **wikilink target verification** (the `[[@First Last]]` rule in talking_order / git_updates), prefer delegating the lookup to **`obsidian-vault`** if the run will need to verify many person notes — its search is more efficient than repeated `Glob` calls. For a single team run (≤15 lookups) the inline `Glob` is fine.
@@ -171,6 +192,7 @@ Jira issues included: N (of M scanned)
 Git commits matched: N
 GitLab activities matched: N
 Confluence activities matched: N
+Sprint pulse: snapshot=<ok|failed|skipped> · trend rows=N · council=<ok|failed|skipped>
 Saved: <markdown link>
 ```
 
@@ -186,6 +208,8 @@ Saved: <markdown link>
 - **Pittsburgh local time.** All `Date` columns and the filename use America/New_York. The `git log` `%aI` and ISO timestamps from Jira/GitLab/Confluence are converted before display.
 - **Section toggle semantics match the PS script.** Skipping a section (e.g., `--no-gitlab`) means: don't gather, don't fetch, and substitute an empty string for the placeholder — the template still resolves cleanly.
 - **No fabricated data.** If an MCP fails, surface the failure in the console summary and put a `_<system> unavailable_` note in the corresponding section. Do not invent.
+- **Sprint pulse is delegated, never inlined.** The `daily` snapshot must come from `sprint-snapshot` and the burndown/forecast/suggestions must come from `clarity-council`'s three pinned personas. Do not author burndown charts, forecasts, or scrum-master suggestions inline — that bypasses the persona constraints (infographics-expert's chartjunk rules, statistics-expert's confidence-band requirement, etc.) that make these artifacts trustworthy.
+- **Burndown trend data is read-only and append-only.** Phase 4.5 reads `_snapshots.jsonl` to feed the chart but never edits past rows. Past `daily.canvas` / `daily.md` are allowed to be overwritten — the trend record lives in the JSONL.
 
 ## Edge cases
 
@@ -197,6 +221,8 @@ Saved: <markdown link>
 - **GitLab `bessemer` group returns 0 projects** — surface a warning; the user may have lost group membership. Render `_No GitLab activity found in the specified time period._`.
 - **Re-run on the same day** — same overwrite/append/skip prompt as `daily-briefing`.
 - **Multi-team run, partial failure** — generate reports for the teams that succeeded; surface per-team status in the final summary block.
+- **Sprint pulse with no prior snapshots** — first daily run of a sprint will only have one trend row after Step 1 writes it. Render the burndown as a single point with a one-line caption (e.g. `_First daily snapshot of Sprint N — trend will fill in over coming days._`) and let the statistics-expert flag the data as too sparse to forecast.
+- **Sprint config note missing** — `sprint-snapshot` will prompt to create one. If the user declines, skip the entire pulse phase rather than half-rendering it.
 
 ## Related skills
 
@@ -205,6 +231,8 @@ This skill writes into and reads from the user's Obsidian vault. When any vault-
 | Skill | Use it for |
 | :--- | :--- |
 | `daily-briefing` | Personal (Outlook-driven) morning prep. Sibling skill — both can run on the same morning. Same `{{vault_root}}` resolution pattern. |
+| `sprint-snapshot` | **Owns the daily snapshot in Phase 4.5.** Always invoke via `Skill` with `--phase "daily"`; never reimplement Jira sprint fetching, identity matching, or the JSONL trend schema inline. The `_snapshots.jsonl` it writes is the burndown's data source. |
+| `clarity-council` | **Owns the pulse council in Phase 4.5.** Always invoke with the three pinned personas (`infographics-expert`, `statistics-expert`, `scrum-master`). Lets each persona enforce its own constraints on the burndown chart, forecast, and suggestions. |
 | `issue-suggest-component` | Pattern reference for memory-driven default Jira project + bulk `AskUserQuestion` pacing if the multi-team loop ever grows beyond a handful of teams. |
 | `issue-feature-breakdown` | Pattern reference for Jira+Confluence context-gathering depth. |
 | `obsidian-markdown` | **Canonical reference for Obsidian Flavored Markdown.** Consult before extending the standup template with new constructs (callouts, embeds, dataview, block IDs, frontmatter properties). |

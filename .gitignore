@@ -12,3 +12,5 @@ mr-review/
 setup-adtool/
 setup-atlassian/
 setup-elm/
+
+.claude/settings.json
