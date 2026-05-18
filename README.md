@@ -1,10 +1,10 @@
-# Ink and Agency Skills Pack
+# Ink and Agency Skill Pack
 
 An opinionated library of reusable agent skills.
 
 The pack is built to work well with Claude-compatible skill loading, but most of the content is deliberately plain Markdown and easy to adapt to other prompt-driven agents. Each folder is a self-contained skill, so you can browse the pack like a catalog instead of reading a giant manual.
 
-![Ink and Agency Skills Pack](_meta/banner.svg)
+![Ink and Agency Skill Pack](_meta/banner.svg)
 
 ## What’s in the pack
 
