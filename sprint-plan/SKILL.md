@@ -33,7 +33,7 @@ This skill is the Claude port of the user's "Sprint Plan" prompt template. It ex
 | `Team` | from memory or prompt | Same `reference_default_scrum_team.md` source as sprint-snapshot |
 | `Inc` | latest from `Scrum 📅/INC <N>/` | Scan vault for newest |
 | `Sprint` | latest from `INC <N>/Sprint <N>/` | Scan vault for newest |
-| `Personas` | `statistics-expert,scrum-master,product-owner` | Comma-separated; `--no-council` disables |
+| `Personas` | `statistics-expert,scrum-master,product-owner,infographics-expert` | Comma-separated; `--no-council` disables. `infographics-expert` is included by default per the [always-add-charts feedback](#charts-required-section); their output drops Mermaid charts directly into the report body. |
 
 ## Workflow
 
@@ -139,7 +139,23 @@ Unless `--no-council`, invoke `clarity-council` via `Skill` with the personas li
 - The `Phase 4` derived numbers (effective capacity, velocity-relevant points, carry-over points + percentage, carry-over WIP risk)
 - The `Phase 2.5` carry-over set (full list with `JIRA:KEY` and previous-end status)
 - The `_sprint.md` frontmatter (capacity, last_sprint_velocity, avg_velocity_last_3)
-- Their assignment: *"Produce two short markdown sections: `## Key Observations` (3-7 bullets) and `## Risks` (3-7 bullets, each with severity High/Med/Low and a one-sentence mitigation). The statistics-expert weighs commitment vs velocity history **and explicitly addresses carry-over: how much of the committed velocity is already-spoken-for, and what that implies for new-work throughput** (with a prediction interval). The scrum-master weighs team load distribution, carry-over WIP risk (sprint starts WIP-saturated?), and re-planning signals. The product-owner weighs scope coherence, dependency surface, and whether carry-over items are still the right priorities or stale. Strict rule: cite issue keys (JIRA:KEY format) for any specific claim — including every carry-over item the council references. No fluff."*
+- Their assignment: *"Produce **three** short markdown sections: `## Key Observations` (3-7 bullets), `## Risks` (3-7 bullets, each with severity High/Med/Low and a one-sentence mitigation), **and `## Infographics` (3-5 Mermaid charts that visualize the headline numbers)**. The statistics-expert weighs commitment vs velocity history **and explicitly addresses carry-over: how much of the committed velocity is already-spoken-for, and what that implies for new-work throughput** (with a prediction interval). The scrum-master weighs team load distribution, carry-over WIP risk (sprint starts WIP-saturated?), and re-planning signals. The product-owner weighs scope coherence, dependency surface, and whether carry-over items are still the right priorities or stale. **The infographics-expert produces the chart block — see Required charts below.** Strict rule: cite issue keys (JIRA:KEY format) for any specific claim — including every carry-over item the council references. No fluff."*
+
+#### Charts required (`## Infographics` section) {#charts-required-section}
+
+The `infographics-expert` persona must produce **at minimum** these Mermaid charts, each with a one-line caption. See [feedback memory: always-add-charts](../../../projects/D--bessemer/memory/feedback_always_add_charts.md) for the rationale (don't ship reports as numbers-only narratives when a chart would land it faster).
+
+| # | Chart | Type | Series |
+| --- | --- | --- | --- |
+| 1 | **Capacity vs commit** | Mermaid `xychart-beta` (bar) | Capacity (line/reference), gross committed, velocity-relevant, last-sprint velocity, 3-sprint avg velocity |
+| 2 | **Carry-over share of velocity-relevant commit** | Mermaid `pie showData` | carry-over points vs new-commit points |
+| 3 | **Per-member workload (% of capacity)** | Mermaid `xychart-beta` (bar) | one bar per assigned member, sorted desc; flag any >25% with a marker note in the caption |
+| 4 | **Status mix at sprint start** | Mermaid `pie showData` | Done / In Review / In Progress / To Do points |
+| 5 | **Velocity trend** | Mermaid `xychart-beta` (line) | S1, S2, S3 (assumed/actual), S4 commit (point), with a horizontal reference at capacity |
+
+Only skip a chart if the underlying data is genuinely empty (e.g. no carry-over → skip chart #2 with a note "no carry-over data"). Never skip silently. If the persona claims a chart can't be drawn, render the same data as a markdown table and label it "fallback (chart unavailable)."
+
+If `--no-council` skips clarity-council entirely, the skill MUST still render the Infographics section directly via inline LLM rendering — the chart requirement is independent of the council orchestration.
 
 If `clarity-council` is unavailable or `--no-council`, render a simpler `## Key Observations` and `## Risks` block from a direct LLM analysis using the same input — but flag in the console summary that the council was skipped.
 
@@ -222,6 +238,8 @@ council_personas: [{{persona list or "none"}}]
 - Overhead members: {{list with effective vs nominal}}
 - In-review overhead items (excluded from velocity): {{list}}
 
+{{Phase 5 Infographics block — Mermaid charts per "Charts required" spec}}
+
 {{Phase 5 Key Observations block}}
 
 {{Phase 5 Risks block}}
@@ -246,7 +264,8 @@ Tickets / Points: 24 / 62.5  (4 tickets / 11 pts carry-over 🔄)
 Capacity:         80.8 (committed 62.5; velocity-relevant 47.5 after 15 pts in-review overhead)
 Carry-over share: 11 / 47.5 = 23% of velocity-relevant commit
 Carry-over WIP:   3 of 24 tickets start already-WIP (12%) — within tolerance
-Council:          statistics-expert + scrum-master + product-owner ✅
+Council:          statistics-expert + scrum-master + product-owner + infographics-expert ✅
+Charts rendered:  5 Mermaid blocks (capacity-vs-commit, carry-over share, per-member workload, status mix, velocity trend)
 Saved:            [sprint-plan-2026-04-01.md](Scrum Teams/Aurora/Scrum 📅/INC 28/Sprint 2/reports/sprint-plan-2026-04-01.md)
                   [sprint-plan-latest.md] → updated pointer
 ```
@@ -263,6 +282,8 @@ If this is the second run today: `Saved: refreshed sprint-plan-2026-04-01.md (si
 - **The `sprint-plan-latest.md` pointer is the canonical wikilink target** for dashboards and bases. Always update it on every run.
 - **Prefer the JSONL row over re-counting from the canvas** for headline totals — it's the canonical record. Use canvas parsing only for the per-issue table.
 - **Wikilink team members only when the vault note exists.** Same `Glob("{{vault_root}}/🤼 Team/**/@*.md")` rule as sprint-snapshot.
+- **Charts are mandatory.** Every sprint-plan report MUST contain the `## Infographics` section with the Mermaid charts spec'd in [Charts required](#charts-required-section). This applies whether the council ran or not. Numbers-only narratives are a regression — see the [always-add-charts feedback memory](../../../projects/D--bessemer/memory/feedback_always_add_charts.md).
+- **`_team-rules.md` lookup search order**: (1) `{{output_root}}/_team-rules.md` (sprint-level override, rare), (2) `{{output_root}}/../_team-rules.md` (INC-level, also rare), (3) **`{{vault_root}}/Scrum Teams/<Team>/_team-rules.md`** (canonical team-root location, where Pyrite's lives). Do not declare team-rules missing without searching all three. See [reference memory](../../../projects/D--bessemer/memory/reference_team_rules_location.md).
 
 ## Edge cases
 
@@ -273,7 +294,7 @@ If this is the second run today: `Saved: refreshed sprint-plan-2026-04-01.md (si
 - **Carry-over ticket re-estimated between sprints** — use the `start.canvas` (current sprint) point value, not the previous-end value. Note the change in the carry-over table: `prev: 3 pts → now: 5 pts`.
 - **Same-day re-run — third+ run** — same as the second: silent overwrite of today's file. The `sprint-plan-latest.md` pointer doesn't need re-updating (it already points to today) but rewrite it anyway for idempotency.
 - **Run on a day spanning a date boundary (after midnight)** — Pittsburgh local date determines the filename. A run started 11:55 PM ET that finishes 12:05 AM ET writes to the date the run *started* — same convention `daily-briefing` uses, prevents off-by-one filenames.
-- **`_team-rules.md` missing** — prompt to bootstrap (per [sprint-snapshot/REFERENCE.md](../sprint-snapshot/REFERENCE.md#bootstrap)). Run anyway with empty overhead/wedge if the user picks "Skip"; flag in the console that the report is less accurate.
+- **`_team-rules.md` missing** — only declare missing after exhausting all three lookup paths (sprint folder, INC folder, **team root** `Scrum Teams/<Team>/`). The team-root location is canonical for Pyrite; sprint/INC overrides are rare. If genuinely missing across all three, prompt to bootstrap (per [sprint-snapshot/REFERENCE.md](../sprint-snapshot/REFERENCE.md#bootstrap)). Run anyway with empty overhead/wedge if the user picks "Skip"; flag in the console that the report is less accurate.
 - **Wedge ticket key in `_team-rules.md` doesn't appear on the canvas** — surface a warning ("Wedge ticket PROJ-9999 not in sprint — wedge accounting will be skipped this sprint"); continue.
 - **Council unavailable / `--no-council`** — degrade to direct-LLM observations + risks; mark `council_personas: [none]` in the frontmatter so consumers can filter.
 - **Sprint with 0 committed points** — render the report; the observations section will (correctly) flag it.
