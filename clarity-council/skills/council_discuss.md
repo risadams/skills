@@ -13,6 +13,7 @@ Run a multi-turn council session with clarifications and evolving recommendation
   - `history[]`
 - `answer` (optional)
 - `personasRequested` (optional list)
+- `personaGroupsRequested` (optional list)
 
 ## Output
 
@@ -26,7 +27,7 @@ Run a multi-turn council session with clarifications and evolving recommendation
 
 1. If no `state`, initialize session with a new `sessionId` and `turn: 1`.
 2. Ask clarification when ambiguity is high. Limit to one focused question per turn.
-3. For each completed turn, run [council_consult.md](council_consult.md).
+3. For each completed turn, run [council_consult.md](council_consult.md). Expand `personaGroupsRequested` through [council_define_persona_groups.md](council_define_persona_groups.md) before calling the consult step.
 4. Apply conflict protocol when personas disagree:
    - Name the dimension of conflict (see council_consult.md synthesis dimensions)
    - Present two or three explicit decision options with a tradeoff table
@@ -47,6 +48,7 @@ When two or more personas hold irreconcilable positions:
 
 - [council_consult.md](council_consult.md)
 - [persona_consult.md](persona_consult.md)
+- [council_define_persona_groups.md](council_define_persona_groups.md)
 
 ## Escalate To
 

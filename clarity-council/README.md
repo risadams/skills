@@ -29,6 +29,7 @@ The skill classifies the request into one of three modes, loads persona contract
 - **`desired_outcome`** — optional. What format/depth the user wants back.
 - **`constraints`** — optional list. Hard requirements the response must respect.
 - **`selected_personas`** — optional list. Default panels are mode-specific.
+- **`selected_persona_groups`** — optional list. Use pre-made small panels instead of hand-picking every persona.
 - **`depth`** — optional: `brief` / `standard` / `deep`.
 - **`state`, `answer`, `sessionId`** — optional. For iterative discussion mode.
 
