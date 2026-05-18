@@ -35,6 +35,11 @@ Each persona lives in its own file. Edit, remove, or add files here to tune the 
 - [Technical Writer](technical-writer.md)
 - [Compliance Officer](compliance-officer.md)
 - [Business Owner](business-owner.md)
+- [Social Media Marketer](social-media-marketer.md)
+- [Content Creator](content-creator.md)
+- [Psychologist](psychologist.md)
+- [Researcher](researcher.md)
+- [Personal Assistant](personal-assistant.md)
 
 ## Adding a Persona
 
