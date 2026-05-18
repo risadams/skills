@@ -29,3 +29,4 @@ View and override active persona behavior for this workspace/session.
 
 - [persona_consult.md](persona_consult.md)
 - [council_consult.md](council_consult.md)
+- [council_define_persona_groups.md](council_define_persona_groups.md) when a pre-made panel is a better fit than a one-off persona override

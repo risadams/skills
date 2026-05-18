@@ -16,6 +16,7 @@ Any LLM harness can consume these files as prompt skills.
 - [persona_consult.md](persona_consult.md)
 - [council_consult.md](council_consult.md)
 - [council_define_personas.md](council_define_personas.md)
+- [council_define_persona_groups.md](council_define_persona_groups.md)
 - [council_discuss.md](council_discuss.md)
 
 ## Interconnection Rule

@@ -25,6 +25,7 @@ Collect what is available, then proceed:
 - optional: `desired_outcome`
 - optional: `constraints` (list)
 - optional: `selected_personas` or `personasRequested` (list)
+- optional: `selected_persona_groups` or `personaGroupsRequested` (list)
 - optional: `depth` (`brief` | `standard` | `deep`)
 - optional for iterative sessions: `state`, `answer`, `sessionId`
 
@@ -46,11 +47,14 @@ Council Progress:
 - Single persona request: use [skills/persona_consult.md](skills/persona_consult.md)
 - Multi-persona synthesis request: use [skills/council_consult.md](skills/council_consult.md)
 - Iterative discussion request: use [skills/council_discuss.md](skills/council_discuss.md)
+- Small pre-made panel request: use [skills/council_define_persona_groups.md](skills/council_define_persona_groups.md)
 
 ### Step 2: Load persona contracts
 
 - Read [skills/personas/PERSONAS.md](skills/personas/PERSONAS.md)
+- Read [skills/personas/GROUPS.md](skills/personas/GROUPS.md) when a request names a group
 - If overrides are requested, follow [skills/council_define_personas.md](skills/council_define_personas.md)
+- If group overrides are requested, follow [skills/council_define_persona_groups.md](skills/council_define_persona_groups.md)
 
 ### Step 3: Generate persona responses
 
@@ -137,8 +141,10 @@ Read these files directly from this list when needed:
 - [skills/persona_consult.md](skills/persona_consult.md)
 - [skills/council_consult.md](skills/council_consult.md)
 - [skills/council_define_personas.md](skills/council_define_personas.md)
+- [skills/council_define_persona_groups.md](skills/council_define_persona_groups.md)
 - [skills/council_discuss.md](skills/council_discuss.md)
 - [skills/personas/PERSONAS.md](skills/personas/PERSONAS.md)
+- [skills/personas/GROUPS.md](skills/personas/GROUPS.md)
 - [skills/SKILL_GRAPH.md](skills/SKILL_GRAPH.md)
 - [skills/RUNBOOK.md](skills/RUNBOOK.md)
 
