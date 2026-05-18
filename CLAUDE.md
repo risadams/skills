@@ -48,6 +48,7 @@ allowed-tools:          # optional
 | daily-briefing | Outlook-driven daily briefing: 24h email + calendar recap, today's schedule, action items, focus blocks |
 | daily-standup-prep | Per-team standup report: gathers Jira/GitLab/Confluence/Git activity over N days, maps to roster, renders Mermaid kanban + talking order, writes to vault |
 | defuddle | Extract clean markdown from web pages via Defuddle CLI (use instead of WebFetch for HTML) |
+| good-morning | Morning kickoff wrapper: runs sprint-snapshot (daily tag) → daily-standup-prep (with burndown) → daily-briefing (report only, no focus blocks). Idempotent — overwrites today's artifacts on re-run |
 | grill-me | Stress-test plans through iterative questioning |
 | grill-with-docs | Grilling against domain docs + updating CONTEXT/ADR artifacts inline |
 | issue-dup-find | Scan open Jira issues (default project from memory) for likely duplicates → markdown report with probability + reason (read-only) |
