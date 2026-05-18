@@ -145,7 +145,33 @@ Skip entirely if `IncludeSprintPulse` is off — substitute empty strings for th
 
 **Step 3 — Run clarity-council.** Invoke the `clarity-council` skill via `Skill` with three personas: `infographics-expert`, `statistics-expert`, `scrum-master`. Pass the parsed JSONL trend rows, sprint config (`StartDate`, `EndDate`, `Capacity`, `LastSprintVelocity`, `AvgVelocityLast3`), the day count (`day X of 21`), and the current matched-activity summary from Phase 4 as the council's shared context. Ask each persona for a tightly scoped artifact:
 
-- **infographics-expert** → render a Mermaid `xychart-beta` burndown chart. X-axis = sprint days (1–21 or actual sprint length). Y-axis = remaining points. Plot two lines: (1) the ideal line from `Capacity` at day 0 to `0` at the final day, (2) the actual line from the JSONL trend rows. Title: `<Team> Sprint <N> Burndown — day X of Y`. Persona must follow its own constraints (viewBox, accessible title, no chartjunk, direct labels over legend) — translated into Mermaid: title set, two named series (`Ideal`, `Actual`), no decorative styling. If only one trend row exists, render a single-point chart with a brief caption noting the trend will fill in over the sprint.
+- **infographics-expert** → render a Mermaid `xychart-beta` burndown chart following the **exact shape below**. Persona is bound by its own constraint that `xychart-beta` data series must be equal-length and contain no `null` — these rules are non-negotiable; broken charts force the consumer to hand-edit and waste the persona's value.
+
+  **Burndown chart contract** (must be followed verbatim; no creative reinterpretation):
+
+  1. **Determine actual data points.** From the JSONL trend rows, build a list `samples = [(day_n, remaining_points), …]` where `day_n` is integer days since `StartDate` (Pittsburgh local, `day_0 = StartDate`), and `remaining_points` comes from `totals.points - by_status.done.points` (or the row's `remaining` field if present). Sort by `day_n`. De-duplicate by `day_n` keeping the latest `snapshot_at` per day.
+  2. **Build the x-axis.** `x_axis = [s.day_n for s in samples]` — **only days that have actual snapshot data**. Do **not** append the sprint end day (e.g. 21) unless there is an actual snapshot for that day. Do **not** insert intermediate days that have no data.
+  3. **Build the actual series.** `actual = [s.remaining_points for s in samples]` — same length as `x_axis`. No `null`, no padding.
+  4. **Build the ideal series.** For each `day_n` in `x_axis`, compute `ideal_n = Capacity * max(0, 1 - day_n / sprint_length_days)` where `sprint_length_days = (EndDate - StartDate).days`. Round to one decimal. Same length as `x_axis`. No `null`.
+  5. **Y-axis bounds.** `y_min = 0`, `y_max = ceil(max(actual + ideal + [Capacity]) * 1.05)` so the highest point isn't flush with the top edge.
+  6. **Title.** `"<Team> Sprint <N> Burndown — day X of Y"` where X is today's `day_n` and Y is `sprint_length_days`.
+  7. **Caption (below the chart, plain markdown, not part of the Mermaid block).** One line stating today's position and the sprint endpoint that is **not** on the chart, e.g. `_Day 5 of 21. Sprint ends 2026-05-30 (ideal endpoint: 0 pts). Chart shows snapshots through today only._`. This restores the "where does the sprint end" context without forcing a future-day `null` into the data.
+  8. **Validate before emitting.** Confirm `len(x_axis) == len(actual) == len(ideal)`, confirm no value is `null` / `None` / `NaN` / empty string, confirm every value falls inside `[y_min, y_max]`. If any check fails, do not emit the chart — emit a one-line markdown note explaining what failed, and surface it so the run can be debugged.
+
+  **Reference template** (substitute the computed values; this is the only acceptable shape):
+
+  ```mermaid
+  xychart-beta
+      title "<Team> Sprint <N> Burndown — day X of Y"
+      x-axis "Sprint day" [<day_n list>]
+      y-axis "Remaining points" 0 --> <y_max>
+      line [<ideal values>]
+      line [<actual values>]
+  ```
+
+  Mermaid `xychart-beta` does not support named series labels; identify the lines in the caption (`_Top line: ideal burn. Bottom line: actual remaining._` or whichever ordering applies for the current sprint state). Do not add styling directives, do not split into multiple `line` calls per series.
+
+  **Single-sample case.** If only one trend row exists, emit a two-point chart with `x_axis = [0, sample.day_n]`, `actual = [Capacity, sample.remaining_points]`, `ideal = [Capacity, ideal_at_sample_day_n]` — both series are length 2, no `null`. Caption: `_First snapshot at day N — trend will fill in over coming days._`
 - **statistics-expert** → produce a single-paragraph forecast: project end-of-sprint completed points using simple linear extrapolation from the trend, compare against `Capacity` and `velocity.avg3`, and state a confidence band (e.g. "tracking 5pts under commit, ±3pts based on 3-sprint variance"). Hard cap: ≤4 sentences. No charts — words only. Must explicitly call out if the trend data is too sparse to forecast (≤2 rows).
 - **scrum-master** → 1–3 actionable suggestions for the team based on the day's matched activity (Phase 4) + the snapshot bucket counts. Examples: "two tickets in In Review for >3 days — chase reviewers", "Ada has no activity tracked in 2 days — confirm not blocked", "WIP at 8 vs limit 5 — pull from Ready before starting new". Bullet list. No vague platitudes — each suggestion names a ticket, person, or measurable signal.
 
