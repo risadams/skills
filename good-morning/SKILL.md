@@ -82,6 +82,15 @@ Print one block summarising what was produced:
 
 Use markdown links so the user can click straight into the vault.
 
+**Then run a personal-assistant pass.** Phase 3 (daily-briefing) was invoked with `--no-focus-blocks`, so the user never sees a focus-block proposal during `/good-morning`. To preserve the "what should I actually do next" signal without re-introducing calendar drafts, invoke the `clarity-council` skill via `Skill` with `persona_consult` mode, persona pinned to `personal-assistant`. Pass:
+
+- **user_problem:** *"Given today's standup and briefing artifacts, what are the 3 most important next actions for the user?"*
+- **context:** the executive-summary bullets from the daily briefing (read from `{{vault_root}}/📅/YYYY/MM/YYYY-MM-DDD.md`), the burndown verdict from the standup report, and any impediments/blockers surfaced in Phase 2.
+- **desired_outcome:** *"A `## Next actions` block — 3 bullets max, each naming a concrete action, timing/deadline, and any dependency or follow-up. No calendar drafts (that's owned by `/daily-briefing` step 9 when invoked standalone)."*
+- **depth:** `brief`
+
+Append the persona's `## Next actions` block to the Phase 4 console output. This makes the wrapper output actionable in its own right rather than just an artifact-link manifest.
+
 ## Rules
 
 - **Sequential, never parallel.** Phase 2 reads Phase 1's JSONL; Phase 3 is independent but ordered last by design.

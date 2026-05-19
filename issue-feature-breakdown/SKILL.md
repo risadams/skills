@@ -45,10 +45,18 @@ Invoke `/clarity-council` using `council_consult` mode:
 - **user_problem**: "Analyze this feature and identify what is being asked, what assumptions are being made, and what gaps or ambiguities exist."
 - **context**: The full Context Summary from Phase 1.
 - **desired_outcome**: "A clear understanding of the feature scope, identified gaps, risks, and open questions that need answers before implementation can begin."
-- **selected_personas**: Senior Architect, Product Owner, Tech Lead, QA Engineer, Devil's Advocate
+- **selected_personas**: Researcher, Senior Architect, Product Owner, Tech Lead, QA Engineer, Devil's Advocate
 - **depth**: standard
 
-Present the council's synthesis to the user: agreements, conflicts, risks/tradeoffs, and the questions each persona raised.
+Persona focus:
+- **Researcher** — owns evidence quality. Audits the Context Summary for missing source citations, unverified claims, and assumptions stated as facts. Surfaces the "what would we need to know to be confident?" questions that the other personas tend to skip past. Failure mode the researcher will catch: a council that confidently scopes a feature on top of an undocumented assumption.
+- **Senior architect** — structural implications and integration seams.
+- **Product owner** — scope, value, and acceptance criteria clarity.
+- **Tech lead** — implementation risk and dependencies on other in-flight work.
+- **QA engineer** — testability and edge-case enumeration.
+- **Devil's advocate** — challenges the proposed scope; flags hidden assumptions.
+
+Present the council's synthesis to the user: agreements, conflicts, risks/tradeoffs, and the questions each persona raised. **Lead with the researcher's evidence-gap list** — those questions usually need to be answered before any of the others can be productively closed.
 
 ### Phase 3 — Clarify
 

@@ -38,7 +38,7 @@ This skill is the Claude port of the user's "Scrum of Scrums" prompt template. I
 | `From` | second-newest snapshot | By `snapshot_at` in `_snapshots.jsonl` |
 | `To` | newest snapshot | By `snapshot_at` |
 | `NewInfo` | empty | Free-text context the SM adds (e.g. "added 2 devs", "11.3 blockers identified") — passed to the council and included in the report header |
-| `Personas` | `statistics-expert,scrum-master,product-owner` | `--no-council` disables |
+| `Personas` | `statistics-expert,scrum-master,product-owner,knowledge-manager` | `--no-council` disables |
 
 ## Workflow
 
@@ -105,7 +105,7 @@ Unless `--no-council`, invoke `clarity-council` via `Skill` with the personas li
 - Both `_snapshots.jsonl` rows (`from`, `to`) for raw context
 - The trailing `_snapshots.jsonl` window (last 5 rows for trend context)
 - The user's `--new-info` text if provided
-- Their assignment: *"Produce four short markdown sections: `## Key Findings` (3-7 bullets), `## Observations` (3-5 bullets), `## Possible Trouble Areas` (3-7 bullets, each with severity High/Med/Low), and `## Trends` (3-5 bullets — the statistics-expert leads here, with prediction intervals where relevant). Cite issue keys (JIRA:KEY) for any specific ticket claim. Cite the `--new-info` context when relevant. Strict: no fluff."*
+- Their assignment: *"Produce five short markdown sections: `## Key Findings` (3-7 bullets), `## Observations` (3-5 bullets), `## Possible Trouble Areas` (3-7 bullets, each with severity High/Med/Low), `## Trends` (3-5 bullets — the statistics-expert leads here, with prediction intervals where relevant), and `## Knowledge to Capture` (1-3 bullets — owned by the knowledge-manager, each naming a concrete artifact to update: a runbook line, an ADR draft, a CONTEXT.md entry, or a wiki page; include the confidence that the learning generalises beyond this week). Cite issue keys (JIRA:KEY) for any specific ticket claim. Cite the `--new-info` context when relevant. Strict: no fluff; no knowledge-manager bullet without a target artifact."*
 
 Specifically for the **statistics-expert**: they should compute and surface (1) period velocity vs avg, (2) carry-over rate (tickets in `to` that were also in `from` and not yet done), (3) projected end-of-sprint completion if the current pace holds, with a prediction interval. The persona's `Output Requirements` enforce the "no point estimate without uncertainty" rule.
 
@@ -177,6 +177,7 @@ council_personas: [{{persona list or "none"}}]
 {{Phase 5 Observations}}
 {{Phase 5 Possible Trouble Areas}}
 {{Phase 5 Trends}}
+{{Phase 5 Knowledge to Capture}}
 
 ## Embedded snapshots
 

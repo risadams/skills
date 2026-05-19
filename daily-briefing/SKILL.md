@@ -27,6 +27,7 @@ Personal daily briefing. Read-only by default for the report; calendar focus-blo
 
 - **obsidian-markdown** — canonical reference for Obsidian Flavored Markdown (frontmatter, wikilinks, embeds, callouts, properties). The vault writes in this skill use OFM syntax; consult `obsidian-markdown` if you need to extend the templates with new constructs (callouts, block IDs, mermaid options, etc.) rather than reinventing the syntax inline.
 - **obsidian-bases** — reference for `.base` file authoring (filters, formulas, views). Used by step 6 when the embedded dashboards are missing from the vault.
+- **clarity-council (personal-assistant persona)** — owns the focus-block proposal in step 9 and the executive-summary "next actions" framing. The persona's Decision Lens (reduce mental load, prevent missed commitments, keep the next action obvious) is the load-bearing voice for the whole briefing — its Output Requirements (next action, timing/deadline, dependencies/follow-ups) shape both the open-action-items section and the focus-block table.
 
 ## Quick start
 
@@ -133,6 +134,8 @@ Before rendering, scan the vault to find existing notes for people mentioned in 
 
 Use [REPORT_TEMPLATE.md](REPORT_TEMPLATE.md). Lead with the executive summary (3-5 bullets), then the structured sections. Keep the whole report scannable in <60 seconds.
 
+**Executive summary voice — personal-assistant lens.** The summary bullets are not free-form prose; they are written through the **personal-assistant** persona's Decision Lens (reduce mental load, prevent missed commitments, keep the next action obvious). Each bullet must satisfy the persona's Output Requirements: the **next action**, the **timing/deadline** if known, and any **dependency or follow-up**. Avoid bullets that merely describe the day ("4 meetings, 12 unread emails") in favor of bullets that name what the user should do about them ("Reply to [[@Alex R]]'s spec question before the 2pm review — blocks [[@Sam Chen]]'s implementation"). When 3+ bullets compete for the top slot, apply the persona's Eisenhower framing (urgent × important) to rank.
+
 **Carryover rule (Open Action Items):** when populating the `Carrying over (still open)` subsection from the prior daily note (`last_run_date`), `Read` that note's `### ✅ Open Action Items` section and copy **only `- [ ]` lines**. Every `- [x]` line is already done — drop it. This rule applies to both subsections of the prior note (`Carrying over` and `New / from window`); merge the surviving `- [ ]` items into today's `Carrying over (still open)`. If the prior note has zero remaining `- [ ]` items, omit the subsection entirely rather than render an empty header.
 
 **Embedded visual surfaces** — the template includes `![[Daily Notes Dashboard.base#...]]` and `![[TODO#By tag]]` embeds that auto-render when the file opens. They depend on these vault files existing:
@@ -198,12 +201,17 @@ After the weekly note is saved, regenerate the monthly rollup. Full template, we
 
 ### 9. Propose focus blocks
 
-Map open action items + prep needs onto free blocks. Present a proposal table:
+**Delegate to `clarity-council` (personal-assistant persona).** This step doesn't author the block list inline — invoke the `clarity-council` skill via `Skill` with `persona_consult` mode, persona pinned to `personal-assistant`, and pass:
 
-| Time | Block | Purpose |
-| :--- | :--- | :--- |
+- **user_problem:** *"Propose focus blocks for today that pull the highest-leverage open actions into the free time available."*
+- **context:** the open action items from step 6 (carry-over + new), the prep needs from step 4 (high-stakes meetings without buffer), and the free blocks (≥45 min) from step 4. Include the no-lunch flag if set.
+- **desired_outcome:** *"A ranked focus-block proposal table — `Time | Block | Purpose` — where each row obeys the persona's Output Requirements: names a concrete next action, ties to a deadline or commitment, and surfaces any dependency (e.g. blocked-by-person, awaiting-input). Apply the Eisenhower Matrix to rank urgent × important. Protect attention: do not propose more than 3 blocks before lunch, and do not break a long contiguous free block into fragments unless the underlying actions genuinely call for it."*
+- **constraints:** `[only propose blocks that fit into existing free time (no overlapping meetings), preserve at least one 45-minute uninterrupted window if the day allows it, do not auto-fill every gap]`
+- **depth:** `brief`
 
-Then ask the user via `AskUserQuestion` which blocks (if any) to add to the calendar. For each approved block, call `outlook_check_calendar_conflict` first, then `outlook_create_meeting_draft` with no attendees and `busy_status="busy"`. Never create blocks without explicit approval.
+The persona's Failure Modes (overcommitting, fragmenting attention, turning a small ask into a process) and Blind Spots (over-organizing at the expense of judgment) are the guardrails — if the council output trips them, re-prompt before showing the user.
+
+Present the returned proposal table to the user, then ask via `AskUserQuestion` which blocks (if any) to add to the calendar. For each approved block, call `outlook_check_calendar_conflict` first, then `outlook_create_meeting_draft` with no attendees and `busy_status="busy"`. Never create blocks without explicit approval.
 
 ## Rules
 

@@ -136,6 +136,7 @@ desired_outcome: >
   diagnostic step.
 
 selected_personas:
+  - researcher
   - senior-architect
   - senior-developer
   - qa-engineer
@@ -145,10 +146,13 @@ depth: standard
 ```
 
 Persona focus:
+- **Researcher** — owns hypothesis falsifiability. For each candidate root cause raised by the others, the researcher checks: is the evidence cited actually load-bearing, or is it pattern-matching? Is the proposed diagnostic step truly falsifiable (would a negative result rule the hypothesis out), or merely consistent with the hypothesis? Surfaces missing data — "we don't yet know X; here's the cheapest way to find out" — before the council starts ranking. This is the persona's load-bearing contribution: keeping the team from pattern-matching on the most-recent commit.
 - **Senior architect** — structural causes (coupling, hidden state, contract drift).
 - **Senior developer** — implementation-level causes (off-by-one, race, null path, recent change).
 - **QA engineer** — environmental and data-shape causes (config, fixture drift, version mismatch).
 - **Devil's advocate** — challenges the obvious answer; flags hypotheses that fit too neatly.
+
+**Order of synthesis:** present the researcher's evidence-quality audit *first*, then the ranked hypotheses. A hypothesis the researcher has flagged as evidentially weak should not be ranked #1 unless the others explicitly counter the flag.
 
 ### Phase 6 — Triage report
 

@@ -37,7 +37,7 @@ This skill is the Claude port of the user's "Sprint Review" prompt template. Pai
 | `From` | `start` | Canvas filename to compare from |
 | `To` | `end` | Canvas filename to compare to |
 | `CommitmentThreshold` | `0.85` | Done velocity-relevant pts ÷ committed velocity-relevant pts ≥ threshold → "commitment met" |
-| `Personas` | `statistics-expert,scrum-master,product-owner` | `--no-council` disables |
+| `Personas` | `statistics-expert,scrum-master,product-owner,knowledge-manager` | `--no-council` disables |
 | `ScrumMaster` | from memory or prompt (recommended `Jane Doe`) | Goes in the report header. Persisted to `reference_default_scrum_master.md`. |
 | `ConfluenceUserUrl` | from memory (recommended the user's own profile URL) | Used to wikilink the SM name in the header. |
 
@@ -106,8 +106,9 @@ Unless `--no-council`, invoke `clarity-council` via `Skill` with the personas li
   3. **`### Did team meet their Sprint Commitment?`** — explicit yes/no based on the threshold + a one-paragraph why.
   4. **`### Confidence level in team meeting their PI Commitment`** — `High / Medium / Low` + a one-paragraph why grounded in the trailing-5-sprint window. The statistics-expert provides the calibration; the scrum-master frames the team-dynamics context.
   5. **`### Impediments`** — list. Each entry: severity (High/Med/Low), one-sentence description, the ticket(s) blocked (`JIRA:KEY`), and a proposed next step. Include carry-over root causes here, not just the carry-over list.
+  6. **`### Retro learnings (durable)`** — 2-4 bullets owned by the **knowledge-manager**. Each captures a learning from this sprint that should outlive the report: a pattern worth repeating, a failure mode the team now recognises, a runbook/ADR/CONTEXT entry that should be created or updated. Each bullet names the artifact that should change (`[[path]]` or "new ADR-NNNN: …") and the persona's confidence that the learning generalises beyond this sprint (High/Med/Low). The knowledge-manager's purpose here is to keep retro insight from evaporating with the report — stakeholder reports are normally read once and forgotten, so this section is the durable hook.
 
-  *Strict rules: cite `JIRA:KEY` for every ticket-specific claim; no fluff; no statistics-expert claim without uncertainty rendering."*
+  *Strict rules: cite `JIRA:KEY` for every ticket-specific claim; no fluff; no statistics-expert claim without uncertainty rendering; no knowledge-manager learning without a concrete artifact to update."*
 
 If `--no-council`, degrade to direct-LLM and flag in console + frontmatter.
 
@@ -173,6 +174,10 @@ Confidence level in team meeting their PI Commitment
 ### Impediments
 
 {{Phase 5 — Impediments}}
+
+### Retro learnings (durable)
+
+{{Phase 5 — Retro learnings (durable)}}
 
 ---
 
