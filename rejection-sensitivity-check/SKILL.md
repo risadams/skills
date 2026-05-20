@@ -1,12 +1,12 @@
 ---
-name: writing-rejection-sensitivity-check
+name: rejection-sensitivity-check
 description: >
   Paste a message that stung; get a calibrated read on whether it's actually
   critical or neutral-but-terse. Separates evidence from interpretation to
   counter rejection-sensitive dysphoria. Use when user says "did they mean
   it that way", "is this criticism", "am I reading this wrong", "rejection
   check", "this stung", "rsd check", or invokes
-  /writing-rejection-sensitivity-check.
+  /rejection-sensitivity-check.
 version: 1.0.0
 license: MIT
 compatibility: claude-code opencode

@@ -1,4 +1,4 @@
-# Writing Rejection Sensitivity Check
+# Rejection Sensitivity Check
 
 A specialized message decoder for messages that stung. The user pastes the message and what they read into it; the skill separates **what the text actually says** from **what the brain layered on top**, calibrates whether the sting is warranted on a 1–5 scale, and offers worst-case, best-case, and most-likely interpretations side by side.
 
@@ -17,7 +17,7 @@ Invoke this skill by:
   - "rejection check"
   - "rsd check"
   - "this stung"
-- Running the slash command: `/writing-rejection-sensitivity-check`
+- Running the slash command: `/rejection-sensitivity-check`
 
 The skill always invokes [clarity-council](../clarity-council/) with `psychologist + devils-advocate` — the second perspective is the whole value.
 
