@@ -66,6 +66,7 @@ allowed-tools:          # optional
 | obsidian-cli | Interact with Obsidian vaults via CLI: notes, tasks, properties; supports plugin/theme dev |
 | obsidian-markdown | Create and edit Obsidian Flavored Markdown (wikilinks, callouts, frontmatter, embeds) |
 | obsidian-vault | Search, create, and manage notes in the Obsidian vault with wikilinks and index notes |
+| rejection-sensitivity-check | Calibrate a stung-by message: separate evidence from interpretation, score warranted sting 1–5. Council: psychologist + devils-advocate (always) |
 | request-refactor-plan | Build incremental refactor plan via interview → file as GitHub issue |
 | skill-create | Create new skills with structured prompts, resources, and packaging conventions |
 | sprint-plan | Convert the start-of-sprint canvas into a planning markdown report (committed scope split carry-over vs new commit, capacity vs commitment, WIP-saturation risk, observations, risks). Assumes all unclosed items from the previous sprint's `end.canvas` carry into this one. Date-stamped output: same-day re-runs refresh silently, prior days preserved. Auto-runs clarity-council. Port of `Prompts/Sprint Plan.md`. |
@@ -80,7 +81,6 @@ allowed-tools:          # optional
 | writing-draft-article | Guide from raw idea/draft to a finished, polished article through iterative questioning |
 | writing-fragments | Mine the user for raw writing fragments before imposing structure |
 | writing-humanize | Remove signs of AI-generated writing from text |
-| writing-rejection-sensitivity-check | Calibrate a stung-by message: separate evidence from interpretation, score warranted sting 1–5. Council: psychologist + devils-advocate (always) |
 | writing-shape | Shape raw material into an article paragraph by paragraph through a conversational session |
 | writing-social-script | Generate a literal script for a dreaded social scenario. Three phrasings (direct/neutral/softened) + exit line. Council: psychologist + customer-advocate |
 | writing-tone-check | Pre-send tone reviewer: paste a draft, get a landing prediction (cold / passive-aggressive / over-apologetic) + rewrite suggestions. Sibling to break-it-down. Council: psychologist |
