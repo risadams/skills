@@ -6,6 +6,7 @@ allowed-tools:
   - AskUserQuestion
   - Bash
   - Read
+  - Edit
   - Glob
 ---
 
@@ -38,6 +39,7 @@ Run phases **sequentially, never in parallel**. Phase 2 depends on Phase 1's JSO
 
 1. A hard failure in Phase 1 (abort the wrapper).
 2. A sub-skill raising a genuinely blocking `AskUserQuestion` that the wrapper cannot answer on the user's behalf (e.g. missing roster CSV with no source path). In that case, forward the prompt as-is.
+3. **`daily-briefing`'s stale-carryover prompt or recently-closed re-surface prompt** — these are intentional user decisions about specific action items (still open vs done vs cancel vs defer; re-spawn vs false re-surface). Forward as-is; never auto-answer "Still open" on the user's behalf, since silently keeping a stale item is exactly the failure mode these prompts exist to prevent. See `daily-briefing/SKILL.md` § "Recently-closed dedup rule" and § "Stale carryover rule".
 
 Overwrite prompts, "continue?" prompts, and any other yes/no the wrapper can answer for the user should be auto-answered with the continue/overwrite option — never paused for input.
 
@@ -81,6 +83,22 @@ Print one block summarising what was produced:
 ```
 
 Use markdown links so the user can click straight into the vault.
+
+**Then run the action-item post-filter pass (belt-and-suspenders).** `daily-briefing` should have applied the verb test and addressed-to-user classifier from its § 3a and the phantom-carryover guard from § 6, but those rules occasionally let an FYI slip through as a `- [ ]` item. Re-read today's daily note and audit the `## ✅ Open Action Items` section:
+
+1. `Read` `{{vault_root}}/📅/YYYY/MM/YYYY-MM-DDD.md` and extract every `- [ ]` line from `### Carrying over (still open)` and `### New / from window`.
+2. For each item, re-apply the heuristics from `daily-briefing/SKILL.md` § 3a:
+   - **Verb test** — does the bullet name an actionable verb directed at the user (reply / review / approve / merge / sign / decide-with-deadline / schedule / draft / fix / investigate / RSVP)? Status verbs (is, was, has been) fail.
+   - **Addressed-to-user test** — is the ask aimed at the user specifically, or is it broadcast / informational / conditional?
+   - **OOO / FYI patterns** — "reach out to X backups" (X is OOO, no actual task), "read [meeting notes]" with no decision pending, "verify Y was sent" with no time-criticality, "decide: [topic]" with no external deadline or stakeholder waiting.
+   - **Phantom test** — does the bullet contain a person/MR#/Jira ticket that does NOT appear anywhere in today's `📨 Email Triage` section or `🗓️ Today's Schedule`? If so, there's no fresh signal backing it and it's likely stale.
+3. If any items fail the audit, `Edit` the daily note:
+   - Remove the bullet from `## ✅ Open Action Items`.
+   - Insert it as a plain bullet (no checkbox) under `## 📝 Notes & Follow-ups` if the item still has informational value (OOO notice, status awareness).
+   - Drop it entirely if it's a phantom with no information content.
+4. Append a one-line console note in the Phase 4 summary listing what was reclassified: `↻ Demoted N action items to Notes & Follow-ups: <one-line list with reason per item>`. Do NOT prompt — the heuristics are conservative enough to demote silently per user feedback. If the user wants to keep something demoted, they can manually restore it.
+
+This is a sanity net, not the primary classifier. If this step is consistently demoting >2 items per run, that's a signal that `daily-briefing/SKILL.md` § 3a needs to be tightened further.
 
 **Then run a personal-assistant pass.** Phase 3 (daily-briefing) was invoked with `--no-focus-blocks`, so the user never sees a focus-block proposal during `/good-morning`. To preserve the "what should I actually do next" signal without re-introducing calendar drafts, invoke the `clarity-council` skill via `Skill` with `persona_consult` mode, persona pinned to `personal-assistant`. Pass:
 
