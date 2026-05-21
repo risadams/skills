@@ -88,6 +88,9 @@ One-line summary, group similar items:
 
 - 3 build pipeline notifications (all green)
 - Weekly newsletter from {{team}}
+- [[@Person]] is OOO {{dates}}; backups: [[@Backup1]], [[@Backup2]]
+
+> _Auto-demoted from Action ({{N}} items): {{subject}} ({{reason}}); {{subject}} ({{reason}})._
 
 #### Awaiting your reply ({{count}})
 
