@@ -102,6 +102,38 @@ For each email in the briefing window, classify into one bucket:
 
 Only fetch full body via `outlook_get_email_by_id` when subject + preview is ambiguous. Keep it cheap.
 
+#### 3a. Action vs. FYI classifier (load-bearing rule)
+
+Default to **FYI**. Promote to **Action required** only when the email passes BOTH a verb test and an addressed-to-user test. Most morning false positives come from over-eager promotion — when in doubt, demote.
+
+**Verb test — does the email ask the user to *do* something?**
+
+The body or subject must contain an actionable verb directed at the user: *reply, review, approve, merge, sign, decide, schedule, draft, fix, investigate, attend, confirm-by-deadline, vote, complete-form, RSVP*. Status verbs (*is, was, has been, will be, completed, deployed, merged, closed*) describe state and do not qualify.
+
+**Addressed-to-user test — is the ask aimed at the user?**
+
+- ✅ User is in `To:` and named in the ask, OR user is the sole recipient, OR user is explicitly @mentioned in body
+- ❌ User is on `Cc:` with no name-call ("CC'd for awareness")
+- ❌ Email is to a distribution list (`pyrite-team@`, `bessemer-all@`) with no per-user ask
+- ❌ Automated notification (Jira `DoNotReply`, GitLab pipeline, Outlook calendar response) with no human ask layered on top
+
+**Auto-demote to FYI (do NOT render as Action required):**
+
+| Pattern | Why it's FYI |
+| :--- | :--- |
+| **OOO autoresponder / "I'm out of office, contact X"** | The "contact X" is conditional on the user *needing* something; the email itself contains no ask. Render in FYI as `[[@Person]] is OOO {{dates}}; covered by [[@Backup]]`. |
+| **Status broadcast** ("X has been deployed", "Sprint 4 starts Monday", "RHOSP maintenance window confirmed") | State report. No verb directed at the user. |
+| **Calendar invite, no body content, you're not the organizer** | The invite itself is the action — accepting/declining is handled in Outlook, not via the briefing. |
+| **"FYI" / "For your awareness" / "Heads up" subject lines** | The sender already self-classified. Trust them. |
+| **Automated digests** (newsletters, build pipeline summaries, Jira sprint-scope-change pings) | No human ask. |
+| **Reply-all chatter on a thread where someone else owns the resolution** | The user is a witness, not an actor. Render as FYI ("12 comments on !2109 — Padmaraju iterating; spot-check optional"). |
+| **"Thanks!" / "Got it" / acknowledgment-only replies** | No ask. |
+| **Meeting recap / minutes with no per-attendee action items** | The action items live inside; if the user has one named in the body, *that* is the Action — not the recap email itself. |
+
+**When promoting to Action required, the bullet must answer: *what verb, by when, blocking what?*** If you can't answer all three, demote to FYI.
+
+**Record what was demoted.** Track every email that *could* have been promoted but was demoted by this rule (subject + sender + one-word reason). After triage, append a single footer line under the FYI section: `> _Auto-demoted from Action (N items): {{subject}} ({{reason}}); {{subject}} ({{reason}})._` so the user can audit the classifier without re-reading every email.
+
 ### 4. Analyze today's schedule
 
 Identify:
