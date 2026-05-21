@@ -165,6 +165,21 @@ Items newly identified from this briefing window (today's email triage, calendar
 
 ---
 
+### 📝 Notes & Follow-ups
+
+Plain bullets (no checkbox) for context, status awareness, and items that didn't pass the verb/addressed-to-user test for Open Action Items. This is where OOO notices, status broadcasts, and demoted items land.
+
+- {{Person}} is OOO {{dates}}; backups: {{Backup1}}, {{Backup2}}
+- {{High-level narrative thread that informs decisions but has no task}}
+
+#### 💭 Open questions (no external deadline)
+
+For decisions the user wants to make eventually but where no one is waiting on the answer. These are NOT tasks — they're personal-grooming items. Render as plain bullets; do NOT carry as `- [ ]`.
+
+- Decide whether to {{topic}} — no external deadline; revisit when {{trigger}}
+
+---
+
 ### 📊 Cross-day context
 
 ![[Daily Notes Dashboard.base#Recent (cards)]]
