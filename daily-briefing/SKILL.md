@@ -170,6 +170,44 @@ Use [REPORT_TEMPLATE.md](REPORT_TEMPLATE.md). Lead with the executive summary (3
 
 **Carryover rule (Open Action Items):** when populating the `Carrying over (still open)` subsection from the prior daily note (`last_run_date`), `Read` that note's `### ✅ Open Action Items` section and copy **only `- [ ]` lines**. Every `- [x]` line is already done — drop it. This rule applies to both subsections of the prior note (`Carrying over` and `New / from window`); merge the surviving `- [ ]` items into today's `Carrying over (still open)`. If the prior note has zero remaining `- [ ]` items, omit the subsection entirely rather than render an empty header.
 
+**Recently-closed dedup rule (applies to `New / from window`):** before adding a `- [ ]` bullet to today's `New / from window` subsection, check whether the same actionable item was completed in any of the last **7 daily notes**. This catches the case where the underlying state (an unanswered email, an open Outlook flag, a stale Jira watcher) still looks "open" to Outlook but the user actually closed the loop offline and marked the vault `[x]` — without this check the briefing keeps re-spawning the same item with louder emojis (see [[feedback_briefing_stale_action_dedup]]).
+
+1. `Glob("{{vault_root}}/📅/**/[0-9][0-9][0-9][0-9]-[0-9][0-9]-D[0-9][0-9].md")`, filter to the **7 most recent dates strictly before today**.
+2. For each, `Read` the file and collect every `- [x]` line under `### ✅ Open Action Items` (both subsections).
+3. **Match heuristic** — two items are "the same" if their normalized action signatures match. Signature = lowercase + strip emojis/badges (⚠/🚨/🟥/🟧 etc.) + strip overdue/deadline annotations (`OVERDUE`, `N DAYS OVERDUE`, `due Fri YYYY-MM-DD`, `(was due ...)`) + strip the leading verb-and-target keyword pair only (e.g., `reply to @Jon Szymczak` + `April shout-outs` survive; the noise around them does not). Wikilinks like `[[@Jon Szymczak]]` count as their inner name. Tag suffixes (`#email`, `#mr`) are part of the signature only when they materially change the action.
+4. **Apply by recency**:
+   - **Match in last 3 days (days T−1, T−2, T−3)** — **suppress silently**. Do not render the new bullet. Add one consolidated line under the `New / from window` subsection footer: `> _Recently closed (suppressed today): {{normalized title}} (closed [[YYYY-MM-DDD]])._` so the user can see what was filtered.
+   - **Match 4–7 days back** — render the new bullet, but prefix with `⚠️ Re-surfaced — last closed [[YYYY-MM-DDD]]. Confirm: still open, re-opened, or false re-spawn?` and raise an `AskUserQuestion` before writing the file. Options: `Still open (keep)`, `Already done (suppress like recent)`, `Re-opened — clarify` (free text). Apply the answer to today's file.
+   - **No match in 7 days** — render normally; this is a genuinely new item.
+5. This dedup runs only for `New / from window`. The `Carrying over` subsection already filters by `[ ]` vs `[x]` and does not need the recency check.
+
+**Action-item classifier (applies to BOTH `Carrying over` and `New / from window`):** before rendering ANY `- [ ]` bullet in this section, re-apply the verb test and addressed-to-user test from § 3a. The Open Action Items section is for things the user must *do* — not for state they should *know*. If the bullet is informational (status broadcast, OOO acknowledgment, FYI), move it to the Notes & Follow-ups section as a plain bullet (no checkbox).
+
+Concrete patterns to catch (these have all leaked through before):
+
+- **"Reach out to [[@Person]] backups — OOO through M/DD"** — the user only reaches out *if* they need that person. Pure FYI. Render in Notes & Follow-ups as `[[@Person]] OOO through {{date}}; backups: [[@Backup1]], [[@Backup2]]`.
+- **"Read [meeting notes / newsletter / addendum]"** — only an action if a specific decision is pending or a question is directed at the user. Otherwise FYI.
+- **"Verify X was sent yesterday"** — borderline. Keep as Action only if the verification is time-critical (e.g., RHOSP shutdown ack with maintenance starting today). Otherwise demote.
+- **"Decide: [topic]"** with no external deadline and no one waiting on the answer — this is a personal-grooming item, not a commitment. Move to a separate `### 💭 Open questions (no external deadline)` subsection inside Notes & Follow-ups; do NOT carry as `- [ ]`.
+
+**Phantom-carryover guard:** an item that has carried as `- [ ]` for more than **5 consecutive daily notes** with no fresh email/Jira/MR/calendar signal in the briefing window is almost certainly stale. Apply this check BEFORE the age-3 prompt below:
+
+1. For each carry-over candidate, compute the age (per the stale carryover rule).
+2. If age ≥ 5, scan the current briefing window's email/calendar data for any reference to the underlying entity (person name, MR number, Jira ticket, subject keywords from the normalized signature).
+3. **No fresh signal → auto-prompt with phantom framing**: *"`{{title}}` has been carried for {{age}} days and there's no email/Jira/MR activity backing it in this briefing window. Most likely this is a phantom. Close it?"* Options: `Close as done (mark [x] in prior note + suppress)`, `Close as cancelled (mark [x] + note reason)`, `Keep — I'm actively working it offline`, `Defer to date (free text)`. Default to `Close as cancelled` if non-interactive.
+4. **Fresh signal present** → continue to the normal age-3 prompt below; phantom guard does not apply.
+
+**Stale carryover rule (applies to `Carrying over (still open)`):** for each `- [ ]` item being carried over, compute its **age** — the number of prior daily notes in which the same normalized action signature has appeared as `- [ ]`. (Re-use the signature normalizer from the dedup rule above; cap the scan at the last 14 daily notes.)
+
+1. **Age 1–2** — render normally; let the existing overdue/badge logic apply.
+2. **Age ≥ 3** — **prompt before rendering**. Raise an `AskUserQuestion` per stale item (batch into one multi-select question if 3+ items qualify): *"`{{normalized title}}` has been carried for {{age}} days. What now?"* Options: `Still doing it (keep)`, `Done — forgot to check (mark [x] in prior note + suppress today)`, `Cancel (mark [x] in prior note + suppress today + add a one-line note explaining why)`, `Defer to date (free text — render as deferred with new deadline, suppress until then)`.
+3. **Apply the answer immediately**:
+   - *Still doing it* — render today with no extra noise; **cap the visual escalation**: never render more than two warning emojis (e.g., `⚠️⚠️ OVERDUE (N+ days)`) regardless of age. The emoji-wall escalation pattern (`⚠⚠⚠⚠ ... 🚨🚨🚨`) is explicitly forbidden — it stops being signal and starts being noise after day 3.
+   - *Done* — `Edit` the most recent prior daily note that contained the unchecked item, flip its `- [ ]` to `- [x]`, and suppress in today's carryover. Print which file was edited so the change is visible.
+   - *Cancel* — same as Done but additionally append ` _(cancelled: {{reason}})_` to the now-checked line in the prior note.
+   - *Defer* — replace the carry-over with a single `- [ ] {{title}} — **deferred to YYYY-MM-DD**` and suppress until that date arrives.
+4. If `AskUserQuestion` is unavailable (e.g., non-interactive run), fall back to rendering with the two-emoji cap and surface a warning in the executive summary: *"{{N}} stale carry-over items skipped age-3 prompt — re-run interactively to triage."*
+
 **Embedded visual surfaces** — the template includes `![[Daily Notes Dashboard.base#...]]` and `![[TODO#By tag]]` embeds that auto-render when the file opens. They depend on these vault files existing:
 - `📅/Daily Notes Dashboard.base` (views: `All daily notes`, `This Week`, `Recent (cards)`) — scopes to daily notes (`📅/**/YYYY-MM-DDD.md`)
 - `📅/Weekly Rollups.base` (views: `All weeks`, `Recent weeks`) — scopes to weekly notes (`📅/**/YYYY-W{NN}.md`)
