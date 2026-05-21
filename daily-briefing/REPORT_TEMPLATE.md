@@ -128,6 +128,8 @@ One bullet per scrum team that has a daily note for today's date. Use the full-p
 
 Use `- [ ]` checkboxes — these auto-feed into the global `TODO.md` Dataview query.
 
+**This section is for things the user must *do* — not for state they should *know*.** Before writing any bullet, apply the verb test and addressed-to-user test from SKILL.md § 3a. Informational items (OOO notices, status broadcasts, "FYI" reads) belong in **📝 Notes & Follow-ups**, not here. Phantom carryovers (age ≥ 5 days with no fresh email/Jira/MR signal) must be triaged via the phantom-carryover guard before they render — see SKILL.md.
+
 Split into two subsections:
 
 #### Carrying over (still open)
@@ -141,9 +143,16 @@ Items pulled from the prior daily note's Open Action Items section. **Filter rul
 
 Items newly identified from this briefing window (today's email triage, calendar prep needs, MR/Jira churn). Always `- [ ]` — anything you mark `[x]` in the same write is suspicious; fix the source instead.
 
+**Before adding any bullet here, apply the recently-closed dedup rule** (see SKILL.md): if the same normalized action signature was `- [x]` in any of the last 7 daily notes, either suppress (matches in last 3 days) or prompt-then-decide (matches 4-7 days back). The footer below records any silent suppressions for transparency.
+
 - [ ] Reply to [[@Alex Rivera]] re: {{topic}} — by {{deadline}}  #email
 - [ ] Review {{document}} before {{meeting}} #prep
 - [ ] Follow up on {{thread}} if no response by {{date}}  #email/followup
+
+> _Recently closed (suppressed today): {{normalized action title}} (closed [[YYYY-MM-DDD]])._  
+> _Recently closed (suppressed today): {{another suppressed item}} (closed [[YYYY-MM-DDD]])._
+
+**Visual escalation cap:** never render more than two warning emojis on a single action item (e.g., `⚠️⚠️ OVERDUE (N+ days)`). The escalating `⚠⚠⚠⚠ ... 🚨🚨🚨` wall is forbidden — see the stale-carryover rule in SKILL.md.
 
 ### 🎯 Proposed Focus Blocks
 
