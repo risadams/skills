@@ -54,6 +54,7 @@ allowed-tools:          # optional
 | grill-me | Stress-test plans through iterative questioning |
 | grill-with-docs | Grilling against domain docs + updating CONTEXT/ADR artifacts inline |
 | hyperfocus-recovery | Reconstruct context after a deep session or interruption from git/file artifacts → suggested re-entry point |
+| idea-generate | Generate and refine ideas from loose topics using Divergence (council) and Convergence (grill) workflows |
 | interest-capture | Fast capture for hyperfixations so they don't derail today's work but aren't lost. Files into Obsidian inbox, returns user to task |
 | issue-dup-find | Scan open Jira issues (default project from memory) for likely duplicates → markdown report with probability + reason (read-only) |
 | issue-estimate-sp | Story point estimation via Jira context + scrum-poker council session (read-only) |
