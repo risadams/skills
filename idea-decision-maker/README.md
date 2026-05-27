@@ -1,4 +1,4 @@
-# Decision Breaker
+# Idea Decision Maker
 
 A forced-pick skill for when you're stuck between two (or more) defensible options. Three personas vote, majority wins, you get the picked option with reasoning, the cost of being wrong, and a concrete "revisit if" trigger. It does **not** expand the option space, surface more considerations, or offer a framework — that's what got you stuck.
 
@@ -18,7 +18,7 @@ Invoke this skill by:
   - "which should I..."
   - "I keep going back and forth"
   - "just tell me what to do"
-- Running the slash command: `/decision-breaker`
+- Running the slash command: `/idea-decision-maker`
 
 The skill will ask you to constrain the option set to 2-4 — if you have more, you'll be asked to drop the worst first.
 
@@ -225,7 +225,7 @@ A: Yes — the personas adapt. Senior-architect becomes "long-term thinker", per
 ## Related skills
 
 - **[clarity-council](../clarity-council/)** — the underlying voting engine.
-- **[grill-me](../grill-me/)** — use first if the options aren't well-defined yet. Grill clarifies, decision-breaker picks.
+- **[grill-me](../grill-me/)** — use first if the options aren't well-defined yet. Grill clarifies, idea-decision-maker picks.
 - **[time-reality-check](../time-reality-check/)** — pairs well when the decision is about how much you can commit to.
 - **[energy-budget](../energy-budget/)** — pairs well when the decision is about what to drop.
 

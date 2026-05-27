@@ -1,12 +1,16 @@
 ---
-name: decision-breaker
+name: idea-decision-maker
 description: >
   Stuck between options. Forces a binary, asks three clarifying questions,
   picks one with reasoning. Defeats analysis paralysis without leaving the
   decision to a coin flip. Use when user says "I can't decide", "help me
   pick", "decision paralysis", "break the tie", "which should I",
-  or invokes /decision-breaker.
-version: 1.0.0
+  or invokes /idea-decision-maker. Part of the `idea-*` family — the fast
+  counterpart to idea-choice (which deliberates and produces a written
+  pros/cons artifact); use this one when the user needs a verdict, not a
+  record. Sits alongside idea-generate (which produces new options) at the
+  "convergent / pick one" end of the family.
+version: 2.0.0
 license: MIT
 compatibility: claude-code opencode
 allowed-tools:
@@ -14,7 +18,7 @@ allowed-tools:
   - Skill
 ---
 
-# Decision Breaker
+# Idea Decision Maker
 
 The user is stuck. Two (or more) options, all roughly defensible, brain spinning. Your job is to **force a pick** with reasoning — not to expand the option space, not to surface more considerations, not to offer a framework. The user has done all that already; that's why they're stuck.
 
