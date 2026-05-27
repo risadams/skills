@@ -21,7 +21,7 @@ The pack is built to work well with Claude-compatible skill loading, but most of
 | Analysis | `break-it-down`, `codebase-explain`, `issue-triage` | Making sense of a codebase, decoding incoming messages, diagnosing bugs faster |
 | Collaboration | `clarity-council`, `grill-me`, `grill-with-docs` | Getting sharper decisions through structured discussion |
 | Planning | `sprint-plan`, `sprint-review`, `daily-briefing` | Organizing work, progress, and reporting |
-| Focus & state | `task-initiation`, `hyperfocus-recovery`, `decision-breaker`, `energy-budget`, `meeting-decompression` | Defeating stalls, recovering context, calibrating load — built with ND-friendly defaults |
+| Focus & state | `task-initiation`, `hyperfocus-recovery`, `idea-decision-maker`, `energy-budget`, `meeting-decompression` | Defeating stalls, recovering context, calibrating load — built with ND-friendly defaults |
 | Workspace tools | `obsidian-vault`, `obsidian-markdown`, `obsidian-canvas` | Managing notes, structure, and visual knowledge maps |
 
 ![Skill Map](_meta/skill-map.svg)
@@ -80,7 +80,7 @@ The full inventory lives in **[CLAUDE.md](CLAUDE.md#skills-inventory)**. That fi
 
 - **v1.1** (2026-05-19)
   - New `writing-*` siblings for outgoing messages: `writing-tone-check`, `writing-apology-calibrator`, `writing-rejection-sensitivity-check`, `writing-social-script`, `writing-cold-open`
-  - New **Focus & state** skills: `task-initiation`, `hyperfocus-recovery`, `time-reality-check`, `decision-breaker`, `energy-budget`, `interest-capture`, `meeting-decompression`
+  - New **Focus & state** skills: `task-initiation`, `hyperfocus-recovery`, `time-reality-check`, `idea-decision-maker` (renamed from `decision-breaker`), `energy-budget`, `interest-capture`, `meeting-decompression`
 - **v1.0** (2026-05-18)
   - Initial public release of the skills pack
 

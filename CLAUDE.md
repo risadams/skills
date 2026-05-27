@@ -47,13 +47,14 @@ allowed-tools:          # optional
 | codebase-improve-architecture | Find refactor/deepening opportunities, informed by CONTEXT.md and ADRs |
 | daily-briefing | Outlook-driven daily briefing: 24h email + calendar recap, today's schedule, action items, focus blocks |
 | daily-standup-prep | Per-team standup report: gathers Jira/GitLab/Confluence/Git activity over N days, maps to roster, renders Mermaid kanban + talking order, writes to vault |
-| decision-breaker | Force a pick between options to defeat analysis paralysis. Council: senior-architect + devils-advocate + personal-assistant vote, majority wins |
 | defuddle | Extract clean markdown from web pages via Defuddle CLI (use instead of WebFetch for HTML) |
 | energy-budget | Spoon-theory accounting for the calendar: score today's load, flag burnout risk, suggest defers. Council: personal-assistant + psychologist |
 | good-morning | Morning kickoff wrapper: runs sprint-snapshot (daily tag) → daily-standup-prep (with burndown) → daily-briefing (report only, no focus blocks). Idempotent — overwrites today's artifacts on re-run |
 | grill-me | Stress-test plans through iterative questioning |
 | grill-with-docs | Grilling against domain docs + updating CONTEXT/ADR artifacts inline |
 | hyperfocus-recovery | Reconstruct context after a deep session or interruption from git/file artifacts → suggested re-entry point |
+| idea-choice | Deliberate pros/cons analysis for one or more ideas: clarity-council pass + optional grill-me, scores each item on Impact × Confidence, renders markdown table per idea, comparison table across ideas, recommendation (Go / Go with caveats / Don't / Needs more analysis). Complements idea-generate (which produces ideas) and idea-decision-maker (which forces a fast binary pick) |
+| idea-decision-maker | Force a pick between options to defeat analysis paralysis. Council: senior-architect + devils-advocate + personal-assistant vote, majority wins. Fast counterpart to idea-choice — use when the user needs a verdict, not a written record (was: `decision-breaker`) |
 | idea-generate | Generate and refine ideas from loose topics using Divergence (council) and Convergence (grill) workflows |
 | interest-capture | Fast capture for hyperfixations so they don't derail today's work but aren't lost. Files into Obsidian inbox, returns user to task |
 | issue-dup-find | Scan open Jira issues (default project from memory) for likely duplicates → markdown report with probability + reason (read-only) |
