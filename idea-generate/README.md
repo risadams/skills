@@ -145,13 +145,13 @@ A: Yes — and that's a successful outcome. Better to find the fatal flaw in a 2
 A: Yes, but the council framing shifts — use Visionary + Skeptic + Marketer (or specify your own persona set). See the naming example in [EXAMPLES.md](EXAMPLES.md).
 
 **Q: Can I use this for personal decisions, not just creative work?**
-A: It works, but for binary decisions try [decision-breaker](../decision-breaker/) first — it's purpose-built for "pick A or B" stalls.
+A: It works, but for binary decisions try [idea-decision-maker](../idea-decision-maker/) first — it's purpose-built for "pick A or B" stalls.
 
 ## Related skills
 
 - **[clarity-council](../clarity-council/)** — the multi-persona engine that powers Phase 1.
 - **[grill-me](../grill-me/)** — the iterative questioning engine that powers Phase 3.
-- **[decision-breaker](../decision-breaker/)** — when the task is "pick between two options," not "generate options."
+- **[idea-decision-maker](../idea-decision-maker/)** — when the task is "pick between two options," not "generate options."
 - **[interest-capture](../interest-capture/)** — when an idea surfaces that you don't want to develop now but don't want to lose.
 - **[writing-fragments](../writing-fragments/)** — when the raw material is for an article, not a project.
 

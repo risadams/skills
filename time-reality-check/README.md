@@ -199,7 +199,7 @@ A: Not automatically. If you re-run the skill after the fact with the actual tim
 ## Related skills
 
 - **[energy-budget](../energy-budget/)** — sibling for cost-counting, but for energy rather than time. They pair well: time-reality-check tells you how long; energy-budget tells you whether you can afford it today.
-- **[decision-breaker](../decision-breaker/)** — when the time estimate reveals you can't do everything and have to pick.
+- **[idea-decision-maker](../idea-decision-maker/)** — when the time estimate reveals you can't do everything and have to pick.
 - **[issue-estimate-sp](../issue-estimate-sp/)** — Jira-ticket-specific story point estimation with scrum-poker council.
 - **[clarity-council](../clarity-council/)** — the statistics-expert + devils-advocate pairing is the engine.
 

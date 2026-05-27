@@ -273,7 +273,7 @@ A: Personal-assistant on its own would optimize for clock time and miss the mask
 
 - **[time-reality-check](../time-reality-check/)** — pairs naturally. Time-reality-check says "this task will take 3 hours, not 1"; energy-budget says "and you don't have the capacity for 3 hours today."
 - **[meeting-decompression](../meeting-decompression/)** — for after a meeting that ate more cost than budgeted.
-- **[decision-breaker](../decision-breaker/)** — when budget reveals you can't do everything and have to pick.
+- **[idea-decision-maker](../idea-decision-maker/)** — when budget reveals you can't do everything and have to pick.
 - **[daily-briefing](../daily-briefing/)** — covers similar territory for general daily planning; energy-budget is the spoon-aware specialization.
 - **[clarity-council](../clarity-council/)** — the personal-assistant + psychologist engine.
 
