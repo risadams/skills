@@ -64,6 +64,7 @@ allowed-tools:          # optional
 | meeting-decompression | Process a meeting dump: separate facts/action-items/social ambiguities. Sorts ruminations into "worth following up on" vs "RSD noise". Council: psychologist + personal-assistant |
 | obsidian-bases | Create and edit Obsidian Bases (.base files) — views, filters, formulas, summaries |
 | obsidian-canvas | Create and edit Obsidian .canvas files (nodes, edges, groups, connections) |
+| obsidian-charts | Build interactive Chart.js charts in Obsidian via `chart` codeblocks — inline literal series, link to a markdown table by `^blockId` (same note or cross-file), or render from a Dataview/Dataviewjs query via `window.renderChart` |
 | obsidian-cli | Interact with Obsidian vaults via CLI: notes, tasks, properties; supports plugin/theme dev |
 | obsidian-markdown | Create and edit Obsidian Flavored Markdown (wikilinks, callouts, frontmatter, embeds) |
 | obsidian-vault | Search, create, and manage notes in the Obsidian vault with wikilinks and index notes |
