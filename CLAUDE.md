@@ -92,7 +92,10 @@ allowed-tools:          # optional
 1. Create `{skill-name}/SKILL.md` with proper YAML frontmatter (name, description).
 2. Add a row to the **Skills inventory** table above in this file — **but only for public skills**. If the skill lives under `_private/` (junction in the root), skip the inventory row and add it to `.gitignore` instead. (README.md links to the inventory — do not duplicate it there.)
 3. Keep supporting docs inside the skill folder.
-4. Folder names are stable — do not rename once published.
+4. Each skill should have a README.md that expands on the instructions in `SKILL.md` with examples, edge cases, and troubleshooting tips. Link to it from `SKILL.md` if needed.
+5. Each skill should be self-contained. If it depends on another skill, link to that skill's README for instructions instead of cross-referencing internal steps.
+6. If needed, the skill should have an examples.md with annotated code snippets for common use cases and edge cases. Link to it from the README.
+7. Folder names are stable — do not rename once published.
 
 ## Editing an existing skill
 
