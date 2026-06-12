@@ -84,6 +84,15 @@ Print one block summarising what was produced:
 
 Use markdown links so the user can click straight into the vault.
 
+**Then run the daily-note section-completeness check (belt-and-suspenders).** `daily-briefing`'s § "Pre-save section checklist" should guarantee these, but the chart silently vanished from 4 consecutive June 2026 notes before the checklist existed — so the wrapper re-verifies. `Read` today's daily note (`{{vault_root}}/📅/YYYY/MM/YYYY-MM-DDD.md`) and confirm it contains all four mandatory surfaces (see [[feedback_daily_note_mandatory_sections]]):
+
+1. A `#### Day at a glance` Mermaid `gantt` block.
+2. A `#### Email triage at a glance` Mermaid `pie` block.
+3. A `### 👥 Team Daily Notes` standup wikilink — unless `Glob("{{vault_root}}/Scrum Teams/**/YYYY-MM-DD.md")` returns zero matches for today.
+4. A `### 📊 Cross-day context` block with the `![[Daily Notes Dashboard.base#Recent (cards)]]` + `![[TODO#By tag]]` embeds.
+
+If any is missing, `Edit` it into the note in place (reconstruct the gantt from the schedule section, the pie from the email-triage counts, the standup link from the `Glob` result) and append a one-line note to the Phase 4 summary: `↻ Repaired missing daily-note sections: <list>`. Do NOT prompt — the sections are mandatory, so repair silently. If this check repairs sections on >1 run, that signals `daily-briefing`'s pre-save checklist is being skipped and needs tightening.
+
 **Then run the action-item post-filter pass (belt-and-suspenders).** `daily-briefing` should have applied the verb test and addressed-to-user classifier from its § 3a and the phantom-carryover guard from § 6, but those rules occasionally let an FYI slip through as a `- [ ]` item. Re-read today's daily note and audit the `## ✅ Open Action Items` section:
 
 1. `Read` `{{vault_root}}/📅/YYYY/MM/YYYY-MM-DDD.md` and extract every `- [ ]` line from `### Carrying over (still open)` and `### New / from window`.
