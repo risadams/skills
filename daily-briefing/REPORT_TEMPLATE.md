@@ -52,6 +52,8 @@ date: YYYY-MM-DD
 
 #### Day at a glance
 
+**⛔ MANDATORY — see "MANDATORY sections" above. Render the gantt even on empty days; never substitute a plain bullet list.**
+
 Render today's schedule as a Mermaid gantt so the day's shape is visible at a glance. Use `HH-mm` for `dateFormat` (Mermaid quirk — dashes, not colons) and `%H:%M` for `axisFormat`. Insert one `:HH-mm, {{duration}}mm` task per meeting in the **Tasks** section, and one per free block in the **Breaks** section. The `START` / `END` markers anchor the chart to the working day; adjust the start/end times and the START duration (`{{end_minus_start}}mm`) to match the user's actual workday.
 
 ```mermaid
@@ -67,6 +69,8 @@ gantt
 ```
 
 #### Email triage at a glance
+
+**⛔ MANDATORY — see "MANDATORY sections" above. Keep the pie even when email volume is zero (use a placeholder slice).**
 
 ```mermaid
 pie showData
@@ -131,6 +135,8 @@ For backfills spanning multiple days, group meetings by day (`#### Thursday — 
 
 ### 👥 Team Daily Notes
 
+**⛔ MANDATORY when a team note exists for the date — see "MANDATORY sections" above. Omit ONLY when `Glob` confirms zero team daily notes for the date.**
+
 One bullet per scrum team that has a daily note for today's date. Use the full-path wikilink with a short display alias, then surface the increment / sprint inline so the active sprint context is visible at a glance. Omit this whole section if no team notes exist for today.
 
 - [[Scrum Teams/{{Team}}/Scrum 📅/{{INC}}/{{Sprint}}/YYYY-MM-DD|{{Team}}]] · {{INC}} / {{Sprint}}
@@ -192,6 +198,8 @@ For decisions the user wants to make eventually but where no one is waiting on t
 ---
 
 ### 📊 Cross-day context
+
+**⛔ MANDATORY — see "MANDATORY sections" above. Always present; the embeds self-render.**
 
 ![[Daily Notes Dashboard.base#Recent (cards)]]
 
