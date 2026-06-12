@@ -260,6 +260,15 @@ If none of the above are true, **fresh signal is absent**. Do not stretch — th
 
 This check is cheap (3 `Glob` calls) and after the first-run accept, becomes a no-op on subsequent days. `TODO.md` is Dataview-managed by the user and is *not* auto-created here — surface its absence as a warning only.
 
+**⛔ Pre-save section checklist (run BEFORE writing the file).** The chart and team-link sections have silently vanished from real runs before (4 consecutive June 2026 notes lost the Mermaid chart; see [[feedback_daily_note_mandatory_sections]]). Before calling `Write`, confirm the assembled report body contains ALL of these — if any is missing, add it (render a minimal/placeholder version rather than skipping):
+
+1. `#### Day at a glance` with a ` ```mermaid ` `gantt` block.
+2. `#### Email triage at a glance` with a ` ```mermaid ` `pie` block.
+3. `### 👥 Team Daily Notes` with a `[[Scrum Teams/.../YYYY-MM-DD|...]]` wikilink — **unless** the step-5 `Glob` returned zero team notes for the date (genuine absence).
+4. `### 📊 Cross-day context` with both `![[Daily Notes Dashboard.base#Recent (cards)]]` and `![[TODO#By tag]]` embeds.
+
+A plain-bullet schedule table does NOT satisfy #1 — the gantt is required in addition to (not instead of) any table.
+
 **Save to vault:**
 
 1. Compute Pittsburgh date: `YYYY`, `MM`, `YYYY-MM-DD`.
