@@ -4,6 +4,17 @@ Use this exact structure when writing to the daily note. The frontmatter mirrors
 
 Placeholders use `{{double-braces}}` — replace with real content; never write literal `{{...}}` to the file.
 
+## ⛔ MANDATORY sections — never omit, never silently drop
+
+The following sections are **required on every daily note** and are exempt from the "skip if empty" allowance. They have silently disappeared from real runs before (the chart vanished for 4 consecutive June 2026 notes; see [[feedback_daily_note_mandatory_sections]]). If the underlying data is thin, render a minimal/placeholder version — do NOT drop the section:
+
+1. **`#### Day at a glance`** — the Mermaid `gantt`. If the calendar is empty, still render the gantt with just the `START`/`END` anchors and a "Open day — no meetings" note. Never replace it with a plain bullet list.
+2. **`#### Email triage at a glance`** — the Mermaid `pie`. If zero emails, render with `"Nothing to triage" : 0` placeholder or a one-line note, but keep the section.
+3. **`### 👥 Team Daily Notes`** — the scrum standup wikilink(s). Omit ONLY when `Glob` confirms zero team daily notes exist for the date (the genuine absence case in step 5). If a team note exists, the link is mandatory.
+4. **`### 📊 Cross-day context`** — the `![[Daily Notes Dashboard.base#Recent (cards)]]` + `![[TODO#By tag]]` embeds. Always present (they self-render even when sparse).
+
+A plain-bullet `## 🗓️ Today's Schedule` table is a **complement to** the gantt, not a **replacement for** it. Both render.
+
 ---
 
 ## File header (frontmatter + title)
