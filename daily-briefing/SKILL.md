@@ -194,21 +194,54 @@ Concrete patterns to catch (these have all leaked through before):
 - **"Verify X was sent yesterday"** — borderline. Keep as Action only if the verification is time-critical (e.g., RHOSP shutdown ack with maintenance starting today). Otherwise demote.
 - **"Decide: [topic]"** with no external deadline and no one waiting on the answer — this is a personal-grooming item, not a commitment. Move to a separate `### 💭 Open questions (no external deadline)` subsection inside Notes & Follow-ups; do NOT carry as `- [ ]`.
 
-**Phantom-carryover guard:** an item that has carried as `- [ ]` for more than **5 consecutive daily notes** with no fresh email/Jira/MR/calendar signal in the briefing window is almost certainly stale. Apply this check BEFORE the age-3 prompt below:
+**Phantom-carryover guard (REQUIRED for every `- [ ]` carryover candidate):** an item that has carried as `- [ ]` for more than **5 consecutive daily notes** with no fresh email/Jira/MR/calendar signal in the briefing window is almost certainly stale — and even items at age 3-4 with no fresh signal warrant a prompt. The guard has three explicit phases; **never skip them, even when running non-interactively**. Apply this check BEFORE the age-3 prompt below.
 
-1. For each carry-over candidate, compute the age (per the stale carryover rule).
-2. If age ≥ 5, scan the current briefing window's email/calendar data for any reference to the underlying entity (person name, MR number, Jira ticket, subject keywords from the normalized signature).
-3. **No fresh signal → auto-prompt with phantom framing**: *"`{{title}}` has been carried for {{age}} days and there's no email/Jira/MR activity backing it in this briefing window. Most likely this is a phantom. Close it?"* Options: `Close as done (mark [x] in prior note + suppress)`, `Close as cancelled (mark [x] + note reason)`, `Keep — I'm actively working it offline`, `Defer to date (free text)`. Default to `Close as cancelled` if non-interactive.
-4. **Fresh signal present** → continue to the normal age-3 prompt below; phantom guard does not apply.
+**Phase A — Compute age (explicit scan, not inference).**
 
-**Stale carryover rule (applies to `Carrying over (still open)`):** for each `- [ ]` item being carried over, compute its **age** — the number of prior daily notes in which the same normalized action signature has appeared as `- [ ]`. (Re-use the signature normalizer from the dedup rule above; cap the scan at the last 14 daily notes.)
+The carryover rule reads only `last_run_date`. The age scan reads further back. This is the load-bearing distinction — without the explicit scan, items have "age 1" forever from the briefing's perspective even though they've been carrying for weeks.
+
+1. `Glob("{{vault_root}}/📅/**/[0-9][0-9][0-9][0-9]-[0-9][0-9]-D[0-9][0-9].md")`, filter to the **14 most recent dates strictly before today**, sorted descending.
+2. For each candidate item from `last_run_date`, normalize its signature (per the dedup rule's normalizer in § 6 step 3 — lowercase, strip emojis/badges/deadline-annotations, keep verb+target keyword pair).
+3. `Read` each of the 14 prior notes' `### ✅ Open Action Items` sections. Count consecutive prior notes (walking backward from `last_run_date`) where the same normalized signature appears as `- [ ]`. Stop counting at the first gap (a note where the signature is absent or `- [x]`).
+4. `age = that consecutive count`. If the item appears as `- [ ]` in `last_run_date` only and nowhere prior in the 14-day window, `age = 1`.
+
+**Phase B — Check for fresh signal (explicit checklist, not vibes).**
+
+A "fresh signal" means *new evidence in the current briefing window that the item is genuinely live*. The check is a fixed checklist — do not infer freshness from tangential mentions.
+
+For each item with `age ≥ 3`, scan the current briefing window's data (the emails + calendar from step 2) and mark a fresh signal present **only if at least one of these is true**:
+
+- **Email — direct correspondence.** An email *from* the named person *to* the user (`To:` line, not `Cc:`), OR an email *from* the user *to* the named person, in the briefing window. Mentions of the person in third-party emails (e.g., Viz High Fives, intern intro thread, recap minutes) do **not** count.
+- **Email — explicit subject match.** An email subject in the window contains the Jira ticket key, MR number, or document name from the item's signature. PR labels (`gatekeeper_ready` etc.) on a *different* MR do not count.
+- **Calendar — scheduled touchpoint.** A meeting in the briefing window or today's calendar lists the named person as an attendee AND is in a context plausibly related to the item (1:1, project sync, review). Standing all-hands meetings (CCB, knowledge transfer, morning coffee) do **not** count.
+- **Jira/MR — direct activity.** A `[JIRA]` or `gitlab` notification email in the window references the exact ticket key or MR number in the item's signature. Activity on adjacent tickets does **not** count.
+
+If none of the above are true, **fresh signal is absent**. Do not stretch — the failure mode is over-eager freshness inference (e.g., "Basile is in the Viz High Fives email therefore the Basile SC2-23240 question is still live"). Tangential presence is not freshness.
+
+**Phase C — Decide.**
+
+| `age` | Fresh signal? | Action |
+| :--- | :--- | :--- |
+| 1–2 | (don't check) | Render normally; no prompt. |
+| 3–4 | Yes | Continue to the age-3 stale-carryover prompt below. |
+| 3–4 | No | Render with `_(phantom check: age N, no fresh signal in window)_` annotation **and** raise the phantom prompt (below). |
+| ≥ 5 | Yes | Continue to the age-3 stale-carryover prompt. |
+| ≥ 5 | No | Raise the phantom prompt unconditionally. **Do not render the item** until the user responds. |
+
+**Phantom prompt (raised by Phase C):** *"`{{title}}` has been carried as `- [ ]` for {{age}} consecutive daily notes and there's no fresh email/Jira/MR/calendar signal for it in the current briefing window. Most likely this is a phantom — already done, cancelled, or never actionable. Close it?"* Options: `Close as done (mark [x] in all prior carrying notes + suppress today + add to feedback memory)`, `Close as cancelled (same + add one-line reason)`, `Keep — I'm actively working it offline (render today, suppress phantom check for 3 days)`, `Defer to date (free text — suppress until then)`.
+
+**Non-interactive fallback:** if `AskUserQuestion` is unavailable, default to `Close as cancelled` for `age ≥ 5 + no fresh signal` (the strongest phantom signal), and to `Keep` for `age 3-4 + no fresh signal` (weaker signal — favor false-positive carryover over silent suppression). Always surface the auto-decision in the executive summary so the user can reverse it.
+
+**Memory write on close.** When the user picks `Close as done` or `Close as cancelled`, write a `feedback` memory in the format of `feedback_basile_sc2_23240_resolved.md` so the next briefing has a hard suppression backstop even if the original Outlook signal that spawned the item re-fires. Memory name pattern: `feedback_<kebab-case-normalized-signature>_resolved.md`.
+
+**Stale carryover rule (applies to `Carrying over (still open)`):** for each `- [ ]` item being carried over that **survived the phantom-carryover guard** (i.e., was not closed in Phase C), apply the age band logic below. Re-use the `age` value computed in Phase A — do not re-scan.
 
 1. **Age 1–2** — render normally; let the existing overdue/badge logic apply.
 2. **Age ≥ 3** — **prompt before rendering**. Raise an `AskUserQuestion` per stale item (batch into one multi-select question if 3+ items qualify): *"`{{normalized title}}` has been carried for {{age}} days. What now?"* Options: `Still doing it (keep)`, `Done — forgot to check (mark [x] in prior note + suppress today)`, `Cancel (mark [x] in prior note + suppress today + add a one-line note explaining why)`, `Defer to date (free text — render as deferred with new deadline, suppress until then)`.
 3. **Apply the answer immediately**:
    - *Still doing it* — render today with no extra noise; **cap the visual escalation**: never render more than two warning emojis (e.g., `⚠️⚠️ OVERDUE (N+ days)`) regardless of age. The emoji-wall escalation pattern (`⚠⚠⚠⚠ ... 🚨🚨🚨`) is explicitly forbidden — it stops being signal and starts being noise after day 3.
-   - *Done* — `Edit` the most recent prior daily note that contained the unchecked item, flip its `- [ ]` to `- [x]`, and suppress in today's carryover. Print which file was edited so the change is visible.
-   - *Cancel* — same as Done but additionally append ` _(cancelled: {{reason}})_` to the now-checked line in the prior note.
+   - *Done* — `Edit` **every** prior daily note within the 14-day age scan window where the item carried as `- [ ]`, flipping each occurrence to `- [x]`. The phantom guard's 7-day dedup scan reads multiple prior notes, so flipping only the most recent leaves the item visible in older notes and lets it re-spawn from there. Suppress in today's carryover. Print the count of files edited.
+   - *Cancel* — same as Done but additionally append ` _(cancelled: {{reason}})_` to the now-checked line in the **most recent** prior note only (one annotation is enough — the others are silent flips).
    - *Defer* — replace the carry-over with a single `- [ ] {{title}} — **deferred to YYYY-MM-DD**` and suppress until that date arrives.
 4. If `AskUserQuestion` is unavailable (e.g., non-interactive run), fall back to rendering with the two-emoji cap and surface a warning in the executive summary: *"{{N}} stale carry-over items skipped age-3 prompt — re-run interactively to triage."*
 
