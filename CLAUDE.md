@@ -2,6 +2,8 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+**Part of the Ink and Agency ecosystem:** See **[INTEGRATION.md](INTEGRATION.md)** for how skills work with agents.
+
 ## Nature of this repo
 
 This is a **Claude Skills Pack** — a collection of prompt-based skill definitions. Each skill is a markdown file (`SKILL.md`) in its own folder. There is no build system, test runner, or linter.
@@ -31,7 +33,12 @@ compatibility: claude-code opencode  # optional
 allowed-tools:          # optional
   - Read
   - Write
+related-agents:         # optional — related agents that can use this skill
+  - agent-name
+  - another-agent
 ```
+
+**Note:** The `related-agents` field should only include agents that actually exist and have clear workflow connections to this skill. See **[INTEGRATION.md](INTEGRATION.md)** for guidance.
 
 ## Skills inventory
 

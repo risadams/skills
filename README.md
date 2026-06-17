@@ -1,8 +1,10 @@
 # Ink and Agency Skill Pack
 
-An opinionated library of reusable agent skills.
+An opinionated library of reusable prompt skills for Claude and compatible agents.
 
 The pack is built to work well with Claude-compatible skill loading, but most of the content is deliberately plain Markdown and easy to adapt to other prompt-driven agents. Each folder is a self-contained skill, so you can browse the pack like a catalog instead of reading a giant manual.
+
+**Part of the Ink and Agency ecosystem:** These skills work alongside the **[Ink and Agency Agents Collection](../agents/README.md)** for focused capabilities and deep domain expertise.
 
 ![Ink and Agency Skill Pack](_meta/banner.svg)
 
@@ -58,6 +60,63 @@ In Claude, skills are triggered in chat by asking for the behavior you want. A f
 - Run a `clarity-council` on this design.
 
 In other agents, the same prompts often still work, but you may need to wire the skill files into that agent's own prompt, skill, or tool-loading system.
+
+## Skills + Agents: Working Together
+
+This skill pack is part of the **[Ink and Agency ecosystem](https://risadams.com/blog/2026/05/18/introducing-ink-and-agency-an-ai-skill-pack-for-humans-and-claude)** and integrates with the companion **[Agents Collection](https://github.com/risadams/claude-subagent)**.
+
+### What's the Difference?
+
+| | Skill | Agent |
+| --- | --- | --- |
+| **Scope** | Focused capability | Deep domain specialist |
+| **Lifetime** | One-off or repetitive | Long-running, persistent |
+| **Examples** | code-review, writing-humanize | backend-developer, security-auditor |
+| **Use when** | You need a quick, structured technique | You need complete ownership of a domain |
+
+### Common Patterns
+
+**Pattern 1: Skill + Agent Enhancement**  
+A skill augments an agent's output during workflow:
+
+```text
+Backend developer agent 
+  → implements API 
+  → code-review skill → validated schema
+```
+
+**Pattern 2: Skill → Agent Escalation**  
+A skill recognizes deeper work is needed and recommends an agent:
+
+```text
+Writing-humanize skill 
+  → AI patterns removed 
+  → suggests content-quality-editor agent
+```
+
+**Pattern 3: Composition**  
+Complex workflows chain multiple skills and agents:
+
+```text
+Planning + Skills + Agents
+  → sprint-plan skill 
+  → project-manager agent 
+  → backlog-grooming skill
+```
+
+### Finding Related Agents
+
+Each skill can declare related agents in its frontmatter. Look for the `related-agents` field:
+
+```yaml
+related-agents:
+  - code-reviewer
+  - security-auditor
+```
+
+For complete integration details, see **[INTEGRATION.md](INTEGRATION.md)**.
+
+---
 
 ## Compatibility
 
