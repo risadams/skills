@@ -16,6 +16,9 @@ compatibility: claude-code opencode
 allowed-tools:
   - AskUserQuestion
   - Skill
+related-agents:
+  - product-manager
+  - business-analyst
 ---
 
 # Idea Decision Maker
