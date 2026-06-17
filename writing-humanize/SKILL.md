@@ -17,6 +17,9 @@ allowed-tools:
   - Grep
   - Glob
   - AskUserQuestion
+related-agents:
+  - content-quality-editor
+  - ai-writing-auditor
 ---
 
 # Humanizer: Remove AI Writing Patterns
