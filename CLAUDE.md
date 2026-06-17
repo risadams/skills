@@ -47,6 +47,7 @@ related-agents:         # optional — related agents that can use this skill
 | Skill | Purpose |
 | :--- | :--- |
 | branch-rebase | Safely rebase the current branch onto its upstream target; auto-resolves trivial conflicts |
+| branch-resolve-conflicts | Resolve complex merge/rebase conflicts by reconstructing intent, preserving both branches' goals when possible, running full automated checks (typecheck, tests, format) |
 | break-it-down | Decode messages into plain language with tone/intent analysis |
 | clarity-council | Persona-based consultation (single/multi-persona, iterative) |
 | codebase-churn | Git-history treemap (SVG): area = lines changed, color = commit frequency — find unstable, bug-prone files |
@@ -59,6 +60,7 @@ related-agents:         # optional — related agents that can use this skill
 | good-morning | Morning kickoff wrapper: runs sprint-snapshot (daily tag) → daily-standup-prep (with burndown) → daily-briefing (report only, no focus blocks). Idempotent — overwrites today's artifacts on re-run |
 | grill-me | Stress-test plans through iterative questioning |
 | grill-with-docs | Grilling against domain docs + updating CONTEXT/ADR artifacts inline |
+| handoff | Compact the current conversation into a structured handoff document so a fresh agent can pick up work without re-deriving context. Saves to OS temp directory, includes suggested skills, redacts sensitive data. |
 | hyperfocus-recovery | Reconstruct context after a deep session or interruption from git/file artifacts → suggested re-entry point |
 | idea-choice | Deliberate pros/cons analysis for one or more ideas: clarity-council pass + optional grill-me, scores each item on Impact × Confidence, renders markdown table per idea, comparison table across ideas, recommendation (Go / Go with caveats / Don't / Needs more analysis). Complements idea-generate (which produces ideas) and idea-decision-maker (which forces a fast binary pick) |
 | idea-decision-maker | Force a pick between options to defeat analysis paralysis. Council: senior-architect + devils-advocate + personal-assistant vote, majority wins. Fast counterpart to idea-choice — use when the user needs a verdict, not a written record (was: `decision-breaker`) |

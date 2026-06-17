@@ -22,8 +22,9 @@ The pack is built to work well with Claude-compatible skill loading, but most of
 | Writing & messaging | `writing-humanize`, `writing-tone-check`, `writing-apology-calibrator`, `writing-social-script` | Composing long-form text, calibrating outgoing messages, scripting awkward conversations |
 | Analysis | `break-it-down`, `codebase-explain`, `issue-triage` | Making sense of a codebase, decoding incoming messages, diagnosing bugs faster |
 | Collaboration | `clarity-council`, `grill-me`, `grill-with-docs` | Getting sharper decisions through structured discussion |
-| Planning | `sprint-plan`, `sprint-review`, `daily-briefing` | Organizing work, progress, and reporting |
+| Planning | `sprint-plan`, `sprint-review`, `daily-briefing`, `handoff` | Organizing work, progress, reporting, and context continuity |
 | Focus & state | `task-initiation`, `hyperfocus-recovery`, `idea-decision-maker`, `energy-budget`, `meeting-decompression` | Defeating stalls, recovering context, calibrating load — built with ND-friendly defaults |
+| Git & workflow | `branch-rebase`, `branch-resolve-conflicts` | Clean rebases with trivial conflict auto-resolution, complex conflict resolution with intent preservation |
 | Workspace tools | `obsidian-vault`, `obsidian-markdown`, `obsidian-canvas` | Managing notes, structure, and visual knowledge maps |
 
 ![Skill Map](_meta/skill-map.svg)
