@@ -13,6 +13,10 @@ allowed-tools:
   - Read
   - Write
   - Bash
+related-agents:
+  - architect-reviewer
+  - backend-developer
+  - frontend-developer
   - AskUserQuestion
   - mcp__atlassian__discover_tools
   - mcp__atlassian__jira_get_issue
