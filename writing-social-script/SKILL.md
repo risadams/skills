@@ -8,6 +8,9 @@ description: >
   "how do I tell them", "I need to ask", "I need to decline", "social script",
   or invokes /writing-social-script.
 version: 1.0.0
+related-agents:
+  - content-quality-editor
+  - content-marketer
 license: MIT
 compatibility: claude-code opencode
 allowed-tools:

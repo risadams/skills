@@ -1,6 +1,8 @@
 ---
 name: skill-create
 description: Create new agent skills with proper structure, progressive disclosure, and bundled resources. Use when user wants to create, write, or build a new skill.
+related-agents:
+  - documentation-engineer
 ---
 
 # Skill Create

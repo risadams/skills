@@ -8,6 +8,8 @@ description: >
   or invokes /writing-tone-check.
 version: 1.0.0
 license: MIT
+related-agents:
+  - content-quality-editor
 compatibility: claude-code opencode
 allowed-tools:
   - Read

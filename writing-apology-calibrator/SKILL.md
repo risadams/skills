@@ -8,6 +8,9 @@ description: >
   "did I say sorry too much", "is this too much", or invokes
   /writing-apology-calibrator.
 version: 1.0.0
+related-agents:
+  - content-quality-editor
+  - customer-success-manager
 license: MIT
 compatibility: claude-code opencode
 allowed-tools:
