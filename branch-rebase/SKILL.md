@@ -7,6 +7,7 @@ description: >
   "sync with baseline", "catch up with main", or invokes /branch-rebase.
 related-agents:
   - devops-engineer
+  - git-workflow-manager
 ---
 
 # Branch Rebase
@@ -106,7 +107,7 @@ For **each** conflicted file, classify and act:
 | `package.json` — only the top-level `"version"` field conflicts | Keep current branch's version. |
 | `CHANGELOG.md` / `CHANGES.md` / `HISTORY.md` — conflict is between **different version headings** (e.g. target added `## 1.3.0` and current branch has `## 1.4.0`) | Keep **both** version sections, ordered newest-first. Each version heading and its entries stay intact. |
 
-**Changelog same-version conflicts:** If both sides modified entries **under the same version heading**, this is **not auto-resolvable**. Two branches must not share a version — treat this as a complex conflict and prompt the user. The current branch likely needs its own version bump.
+**Changelog same-version conflicts:** If both sides modified entries **under the same version heading**, this is **not auto-resolvable**. Two branches must not share a version — treat this as a complex conflict.
 | `*.csproj` — only `<Version>` or `<PackageVersion>` conflicts | Keep current branch's version. |
 
 After auto-resolving a file:
@@ -117,12 +118,19 @@ git add <file>
 
 #### Not auto-resolvable
 
-Any conflict that does **not** match the table above is complex. For each complex conflict:
+Any conflict that does **not** match the table above is complex. Use the `/branch-resolve-conflicts` skill:
 
-1. Show the user the conflict diff for that file.
-2. Ask: "This conflict in `<file>` requires manual resolution. Would you like to resolve it now, or should I abort the rebase?"
-3. If the user chooses to resolve, let them edit, then `git add` the file.
-4. If the user chooses to abort:
+```
+/branch-resolve-conflicts
+```
+
+This skill will:
+- Reconstruct the intent behind each conflicting change
+- Preserve both branches' goals where possible
+- Run automated checks (typecheck, tests, format)
+- Stage all resolutions and continue the rebase
+
+If the user prefers to abort rather than resolve complex conflicts:
 
 ```bash
 git rebase --abort
