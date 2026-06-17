@@ -1,6 +1,9 @@
 ---
 name: daily-briefing
 description: Personal daily briefing assistant. Pulls the last 24 hours of email and calendar from Outlook, summarizes today's schedule, surfaces open action items, and proposes focus blocks. Use when user says "daily briefing", "morning briefing", "daily standup prep", or invokes /daily-briefing.
+related-agents:
+  - project-manager
+  - customer-success-manager
 allowed-tools:
   - mcp__outlook__outlook_get_inbox_emails
   - mcp__outlook__outlook_get_calendar_events

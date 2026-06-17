@@ -6,6 +6,10 @@ description: >
   and ambiguities. Produces an actionable breakdown plan. All actions are
   read-only. Use when user says "break down this feature", "analyze this
   ticket", "feature breakdown", or provides a Jira ticket key for analysis.
+related-agents:
+  - product-manager
+  - scrum-master
+  - business-analyst
 ---
 
 # Feature Breakdown

@@ -8,6 +8,8 @@ description: >
   recovery", "hyperfocus recovery", or invokes /hyperfocus-recovery.
 version: 1.0.0
 license: MIT
+related-agents:
+  - project-manager
 compatibility: claude-code opencode
 allowed-tools:
   - Bash

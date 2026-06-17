@@ -13,6 +13,10 @@ allowed-tools:
   - Read
   - Glob
   - Grep
+related-agents:
+  - project-manager
+  - scrum-master
+  - debugger
   - Bash
   - Agent
   - Skill

@@ -13,6 +13,9 @@ allowed-tools:
   - Read
   - Write
   - Bash
+related-agents:
+  - project-manager
+  - scrum-master
   - AskUserQuestion
   - mcp__atlassian__jira_search
   - mcp__atlassian__jira_get_issue

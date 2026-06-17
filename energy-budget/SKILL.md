@@ -8,6 +8,8 @@ description: >
   overcommitted", "what should I drop", "burnout check",
   or invokes /energy-budget.
 version: 1.0.0
+related-agents:
+  - project-manager
 license: MIT
 compatibility: claude-code opencode
 allowed-tools:

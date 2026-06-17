@@ -1,6 +1,9 @@
 ---
 name: sprint-review
 description: End-of-sprint stakeholder report comparing the start.canvas (planning) to end.canvas (sprint close). Produces a markdown report fitting the standard SM template (Scrum Master, Sprint Accomplishments, Feature Demos, Customer Meetings, Status, Sprint Commitment, PI Confidence, Impediments). Applies team-specific overhead, wedge-balancing, and in-review overhead rules. Auto-runs a clarity-council session (statistics-expert + scrum-master + product-owner) for accomplishments/status/impediments synthesis. Use when user says "sprint review", "end of sprint report", "sprint stakeholder report", "sprint close report", or invokes /sprint-review.
+related-agents:
+  - scrum-master
+  - product-manager
 allowed-tools:
   - Read
   - Write
