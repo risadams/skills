@@ -44,7 +44,7 @@ A Jira ticket key (e.g. `PROJ-123`). Extract from the user's message using patte
 
 ### Phase 2 — Council Analysis
 
-Invoke `/clarity-council` using `council_consult` mode:
+Invoke `/clarity-council` using `council-multi-persona` agent:
 
 - **user_problem**: "Analyze this feature and identify what is being asked, what assumptions are being made, and what gaps or ambiguities exist."
 - **context**: The full Context Summary from Phase 1.

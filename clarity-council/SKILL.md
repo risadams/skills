@@ -2,80 +2,58 @@
 name: clarity-council
 description: Facilitates structured single-persona or multi-persona consultation for strategy, product, engineering, operations, and risk decisions. Use when the user requests a council, multiple perspectives, persona advice, tradeoff analysis, or iterative clarification and debate.
 related-agents:
-  - product-manager
-  - business-analyst
-  - architect-reviewer
+  - council-single-persona
+  - council-multi-persona
+  - council-iterative
 ---
 
-# Clarity Council
+# Clarity Council: Agent-Based System
 
-Use this skill to run persona-based consultation with consistent structure and explicit tradeoffs.
+This skill routes to three specialized agents in the `agents/00-council/` folder. Use the appropriate agent based on your decision-making need.
 
 ## When to use
 
-Use this skill when the user asks for any of the following:
-- multiple expert viewpoints
-- one specific persona's recommendation
-- synthesis of agreements, conflicts, risks, and next steps
-- iterative back-and-forth to clarify requirements before final guidance
+Use this system when you need any of the following:
+- Quick expert opinion from one persona
+- Multiple expert viewpoints with synthesis
+- Iterative decision-making with clarifications
+- Structured tradeoff analysis
 
-Do not use this skill for pure factual lookup with no decision component.
+Do not use for pure factual lookup with no decision component.
 
-## Inputs
+## Which Agent to Use?
 
-Collect what is available, then proceed:
-- required: `user_problem` or `requestText`
-- optional: `context`
-- optional: `desired_outcome`
-- optional: `constraints` (list)
-- optional: `selected_personas` or `personasRequested` (list)
-- optional: `selected_persona_groups` or `personaGroupsRequested` (list)
-- optional: `depth` (`brief` | `standard` | `deep`)
-- optional for iterative sessions: `state`, `answer`, `sessionId`
+### Single Expert Perspective
+**Agent**: `council-single-persona`  
+**When**: You need focused advice from one expert (quick, 10–15 min)  
+**Example**: "As a senior-architect, should we migrate to microservices?"
 
-## Workflow
+### Multiple Expert Synthesis
+**Agent**: `council-multi-persona`  
+**When**: A decision needs multiple viewpoints synthesized (20–30 min)  
+**Example**: "Convene a council on Kubernetes adoption."
 
-Use this checklist for complex requests:
+### Iterative Decision-Making
+**Agent**: `council-iterative`  
+**When**: You need multi-turn iteration with clarifications (30–60 min, 3–5 turns)  
+**Example**: "Run a council on team restructuring. I'll iterate."
 
-```text
-Council Progress:
-- [ ] Step 1: Classify mode (single persona, multi-persona, or multi-turn discussion)
-- [ ] Step 2: Load persona contracts and apply overrides if requested
-- [ ] Step 3: Produce persona responses with explicit assumptions
-- [ ] Step 4: Synthesize agreements, conflicts, risks/tradeoffs, next steps
-- [ ] Step 5: If ambiguity remains, ask targeted clarification and continue
+## Agent Invocation
+
+Simply invoke the appropriate agent directly:
+
+```
+/council-single-persona
+  As a product-owner, should we ship this quarter?
+
+/council-multi-persona
+  Convene a council on whether to adopt TypeScript.
+
+/council-iterative
+  Run a council on payment processor selection. I'll iterate.
 ```
 
-### Step 1: Classify mode
-
-- Single persona request: use [skills/persona_consult.md](skills/persona_consult.md)
-- Multi-persona synthesis request: use [skills/council_consult.md](skills/council_consult.md)
-- Iterative discussion request: use [skills/council_discuss.md](skills/council_discuss.md)
-- Small pre-made panel request: use [skills/council_define_persona_groups.md](skills/council_define_persona_groups.md)
-
-### Step 2: Load persona contracts
-
-- Read [skills/personas/PERSONAS.md](skills/personas/PERSONAS.md)
-- Read [skills/personas/GROUPS.md](skills/personas/GROUPS.md) when a request names a group
-- If overrides are requested, follow [skills/council_define_personas.md](skills/council_define_personas.md)
-- If group overrides are requested, follow [skills/council_define_persona_groups.md](skills/council_define_persona_groups.md)
-
-### Step 3: Generate persona responses
-
-Follow [skills/persona_consult.md](skills/persona_consult.md) for each persona.
-
-### Step 4: Synthesize
-
-Follow [skills/council_consult.md](skills/council_consult.md) and produce:
-- agreements
-- conflicts
-- risks_tradeoffs
-- next_steps
-
-### Step 5: Clarify and iterate when needed
-
-For unresolved ambiguity or competing constraints, use [skills/council_discuss.md](skills/council_discuss.md).
-Return updated session state each turn.
+See the full documentation at `agents/00-council/README.md` and `agents/00-council/INDEX.md`.
 
 ## Output templates
 
@@ -138,19 +116,19 @@ state:
   - <compact turn summary>
 ```
 
-## Reference files
+## Reference Files
 
-Read these files directly from this list when needed:
-- [EXAMPLES.md](EXAMPLES.md) — input-only invocation examples for all modes
-- [skills/persona_consult.md](skills/persona_consult.md)
-- [skills/council_consult.md](skills/council_consult.md)
-- [skills/council_define_personas.md](skills/council_define_personas.md)
-- [skills/council_define_persona_groups.md](skills/council_define_persona_groups.md)
-- [skills/council_discuss.md](skills/council_discuss.md)
-- [skills/personas/PERSONAS.md](skills/personas/PERSONAS.md)
-- [skills/personas/GROUPS.md](skills/personas/GROUPS.md)
-- [skills/SKILL_GRAPH.md](skills/SKILL_GRAPH.md)
-- [skills/RUNBOOK.md](skills/RUNBOOK.md)
+Agent documentation:
+- `agents/00-council/README.md` — Comprehensive guide to all agents
+- `agents/00-council/INDEX.md` — Quick navigation and decision tree
+- `agents/00-council/council-single-persona.md` — Single expert agent
+- `agents/00-council/council-multi-persona.md` — Multi-expert synthesis agent
+- `agents/00-council/council-iterative.md` — Iterative decision agent
+
+Persona library:
+- [skills/personas/PERSONAS.md](skills/personas/PERSONAS.md) — Full persona index
+- [skills/personas/GROUPS.md](skills/personas/GROUPS.md) — Pre-made persona panels
+- [skills/personas/*.md](skills/personas/) — Individual persona contracts (35+ total)
 
 ## Quality checks
 

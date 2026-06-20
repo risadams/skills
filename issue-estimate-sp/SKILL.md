@@ -110,7 +110,6 @@ depth: standard
 
 **Persona overrides for scrum poker:**
 
-Apply these overrides via `council_define_personas`:
 
 - **scrum-master**: Focus on historical velocity, team capacity, and whether this fits cleanly into a sprint. Compare against reference data for similar tickets. Watch for estimation anti-patterns (artificial splitting, optimism bias).
 - **tech-lead**: Focus on technical complexity, unknowns, dependencies, and coordination tax. Flag if this crosses team boundaries or requires environment access.

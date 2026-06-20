@@ -1,206 +1,260 @@
-# Clarity Council
+# Clarity Council: Agent-Based System
 
-Run a structured persona-based consultation for any decision that benefits from multiple perspectives — strategy, product, engineering, operations, risk. The skill supports three modes (single persona, multi-persona synthesis, iterative discussion), enforces consistent output structure (assumptions, advice, conflicts, tradeoffs, next steps), and is invoked directly by several other skills (issue-triage, issue-feature-breakdown, issue-estimate-sp, codebase-improve-architecture, mr-draft).
+Run structured persona-based consultation for decisions that benefit from multiple perspectives. Three specialized agents handle different decision-making needs:
+
+- **council-single-persona** — Quick expert advice (10–15 min)
+- **council-multi-persona** — Synthesized multi-perspective advice (20–30 min)
+- **council-iterative** — Multi-turn iterative decisions (30–60 min)
+
+Output is consistently structured (assumptions, advice, conflicts, tradeoffs, next steps) so downstream consumers can parse it reliably.
 
 ## Why this exists
 
 Most decisions die in one of two ways: a single perspective dominates and the blind spots ship into production, or you collect five opinions in a meeting and walk out without a synthesis. Persona-based consultation catches both: each persona is constrained to a defined viewpoint (so blind spots can't dominate), and the synthesis step is non-optional (so disagreements get articulated, not buried). The skill also makes the consultation portable — the output structure is consistent across modes and across invoking skills, so you can reason about the same decision the same way no matter which entry point you used.
 
-## Triggers
+## How to Invoke
 
-Invoke this skill by:
+### Direct Agent Invocation (Recommended)
 
-- Saying any of these in chat:
-  - "convene a council"
-  - "give me multiple perspectives on this"
-  - "what would a {persona} say about X"
-  - "stress-test this decision with a council"
-- Running the slash command: `/clarity-council`
-- Other skills invoke this automatically: `issue-triage`, `issue-feature-breakdown`, `issue-estimate-sp`, `codebase-improve-architecture`, `mr-draft` all delegate to it for their analysis phases.
+Use the appropriate agent based on your need:
 
-## What it does
+```
+/council-single-persona
+  As a senior-architect, should we migrate to microservices?
 
-The skill classifies the request into one of three modes, loads persona contracts (with optional overrides), generates persona responses with explicit assumptions, and synthesizes agreements/conflicts/risks/next steps. Iterative mode supports multi-turn discussions with session state. Output is structured (YAML-style markdown blocks) so downstream consumers (other skills, dashboards) can parse it. It does **not** make the final decision — the user does — and it doesn't pretend confidence it doesn't have (every response includes a confidence level).
+/council-multi-persona
+  Convene a council on Kubernetes adoption.
 
-### Inputs
-
-- **`user_problem`** — required. The decision or question.
-- **`context`** — optional. Background, constraints, prior decisions.
-- **`desired_outcome`** — optional. What format/depth the user wants back.
-- **`constraints`** — optional list. Hard requirements the response must respect.
-- **`selected_personas`** — optional list. Default panels are mode-specific.
-- **`selected_persona_groups`** — optional list. Use pre-made small panels instead of hand-picking every persona.
-- **`depth`** — optional: `brief` / `standard` / `deep`.
-- **`state`, `answer`, `sessionId`** — optional. For iterative discussion mode.
-
-### Outputs
-
-- One of three structured markdown blocks (single-persona, multi-persona, or multi-turn discussion). Each contains `assumptions`, `advice`, `questions`, `next_steps`, and a `confidence` value.
-
-### External systems used
-
-- Local filesystem (reads persona contracts from `skills/personas/`)
-
-## How to use it
-
-A typical multi-persona session looks like this:
-
-```text
-You: convene a council on whether to migrate our auth from basic to OAuth.
-     Personas: senior-architect, security-engineer, product-owner.
-
-Skill: [Loads persona contracts, generates responses]
-
-       responses:
-       - persona: senior-architect
-         summary: Migrate; the operational complexity of basic auth at our
-           scale already exceeds OAuth's setup cost.
-         advice:
-         - Use a library, not a hand-rolled implementation.
-         - Plan a 4-6 week parallel-run window before cutover.
-         assumptions:
-         - The team has at least one engineer with prior OAuth experience.
-         confidence: high
-
-       - persona: security-engineer
-         summary: Migrate, but only after threat-modeling the new attack surface.
-         advice:
-         - JWT in httpOnly cookies, not localStorage.
-         - Token refresh must be idempotent and observable.
-         confidence: high
-
-       - persona: product-owner
-         summary: Don't migrate this quarter — Q3 has 3 in-flight payment
-           features and migration risk would compete for the same eng cycles.
-         confidence: medium
-
-       synthesis:
-         agreements:
-         - Migration is the right direction.
-         conflicts:
-         - When: senior-architect + security-engineer want it now;
-           product-owner wants Q4.
-         risks_tradeoffs:
-         - Q3 conflict with payments work is the load-bearing tradeoff.
-         next_steps:
-         - Decide cutover quarter (Q3 vs Q4) before scoping further.
-         - Threat-model the new attack surface regardless of timing.
+/council-iterative
+  Run a council on team restructuring. I'll iterate.
 ```
 
-## Getting the most out of it
+### From Other Skills
 
-- **Pick personas deliberately.** Default panels work, but `selected_personas` lets you assemble the right room. A council without `devils-advocate` will drift toward consensus prematurely.
-- **Always use the synthesis.** The synthesis is what makes multi-persona output usable. Skipping straight to advice from your favorite persona defeats the point.
-- **Use `depth: brief` for routine decisions.** A single-persona quick consult takes seconds; the full multi-persona deep mode takes much longer. Match the depth to the stakes.
-- **Read agreements before conflicts.** Agreements are the strong evidence; conflicts are the live questions. Many users skim straight to conflicts and miss what every persona already concluded.
+Other skills (issue-triage, issue-feature-breakdown, issue-estimate-sp, etc.) invoke the agents programmatically:
 
-## Anti-patterns
+```
+Invoke: council-multi-persona
+  problem: "Should we adopt TypeScript?"
+  selected_personas: ["senior-developer", "tech-lead", "qa-engineer"]
+  depth: "standard"
+```
 
-What this skill will NOT do, or what to avoid:
+## How It Works
 
-- ❌ **Make the final decision.** The synthesis surfaces tradeoffs and next steps; the human decides. The skill won't say "do X" with no qualification.
-- ❌ **Use it for pure factual lookup.** "What's the syntax for a Postgres index?" doesn't need a council. Save the skill for decisions, not facts.
-- ❌ **Run a council in a hurry without context.** Garbage in, structured-garbage out. If the problem statement is two sentences and there's no context, the personas have nothing to push on.
-- ❌ **Skip the assumptions list.** Every response includes assumptions explicitly. Ignoring them turns the advice into "trust me" — and the assumptions are usually where the real disagreement lives.
+The agent-based system loads persona contracts, generates perspective-specific responses with explicit assumptions, and synthesizes across viewpoints. Each agent is optimized for its mode:
+
+**council-single-persona**: Single expert perspective with confidence and assumptions  
+**council-multi-persona**: Multiple expert perspectives + synthesis (agreements/conflicts/risks)  
+**council-iterative**: Multi-turn refinement with targeted clarifications and session state
+
+Output is structured (YAML-style markdown blocks) so downstream consumers (other skills, dashboards, APIs) can parse reliably.
+
+### Common Inputs
+
+- **Decision/problem** — required. What you're deciding on.
+- **Context** — optional. Background, constraints, prior decisions.
+- **Personas** — optional. Which experts to consult (defaults apply per mode).
+- **Persona groups** — optional. Use pre-made panels (product-delivery-core, platform-and-reliability, etc.).
+- **Depth** — optional: `brief` / `standard` / `deep` (affects thoroughness).
+- **Iterative state** — for multi-turn sessions (sessionId, turn, history).
+
+### Consistent Outputs
+
+All agents produce structured markdown with:
+- **Summary** — The recommendation
+- **Advice** — Specific points tied to persona's lens
+- **Assumptions** — What must be true for this to hold
+- **Questions** — To validate assumptions
+- **Next steps** — Concrete actions
+- **Confidence** — Low / Medium / High with justification
+
+Multi-persona mode adds:
+- **Responses** — Individual perspective per persona
+- **Synthesis** — Agreements, conflicts (named by dimension), risks/tradeoffs
+
+Iterative mode adds:
+- **Session state** — Carried forward per turn
+- **Conflict protocol** — Decision tables to resolve clashes
 
 ## Examples
 
-### Example: Single-persona quick consult
+### Single-Persona Quick Consult
 
-```text
-You: as a senior-developer: should we cache the user-profile lookup
-     or fetch it on every request? The profile is ~2KB and changes
-     a few times per session.
-
-Skill: summary: Cache it with a short TTL — 30s.
-       advice:
-       - In-memory cache (process-local) is enough; Redis is overkill.
-       - Stamp every cache entry with a `last_modified` from the source.
-       assumptions:
-       - User load is modest (< 1k req/s/instance).
-       - Profile mutations are infrequent enough that 30s staleness
-         is acceptable to the product.
-       questions:
-       - Is there an SLA on profile-update visibility?
-       next_steps:
-       - Confirm the SLA, then ship the cache.
-       confidence: high
+**Invocation**: `/council-single-persona`
+```
+As a security-expert, what's the top risk in our current auth model?
 ```
 
-Single-persona is fast and gets you a recommendation with the assumptions exposed.
+**Output**:
+```markdown
+Summary: Session token storage is your top risk.
 
-### Example: Iterative discussion (multi-turn)
+Advice:
+- Move to httpOnly cookies immediately.
+- Implement token rotation (refresh every 15 min).
+- Add signed headers for tampering detection.
 
-```text
-You: convene a council on adopting feature flags. I'll iterate.
+Assumptions:
+- You can tolerate a 1–2 week implementation window.
+- Users can handle 15-minute session timeouts.
 
-Skill: status: needs_clarification
-       message: Is the goal experimentation, gradual rollout, or kill-switching?
-       Each implies different infrastructure.
-
-You: gradual rollout primarily; experimentation maybe later.
-
-Skill: status: in_progress
-       output:
-         (multi-persona output for "gradual rollout feature flags")
-       message: I have a recommendation. Want me to deepen any conflict?
+Confidence: high
+  — Token storage risks are well-understood; this is a validated pattern.
 ```
 
-Multi-turn mode keeps state across turns, refining the recommendation as constraints emerge.
+### Multi-Persona Synthesis
 
-## Internals
+**Invocation**: `/council-multi-persona`
+```
+Convene a council on whether to migrate our auth from basic to OAuth.
+Personas: senior-architect, security-expert, product-owner.
+```
 
-The skill follows a 5-step workflow per request:
+**Output** (abbreviated):
+```markdown
+responses:
+- persona: senior-architect
+  summary: Migrate; operational complexity of basic auth already exceeds OAuth's setup cost.
+  advice: [...]
+  confidence: high
 
-1. **Classify mode** — single persona, multi-persona synthesis, or iterative discussion.
-2. **Load persona contracts** — from `skills/personas/PERSONAS.md`; apply overrides if `council_define_personas` was invoked.
-3. **Generate persona responses** — each persona produces summary / advice / assumptions / questions / next_steps / confidence following its contract.
-4. **Synthesize** — agreements / conflicts / risks_tradeoffs / next_steps across personas (multi-persona modes only).
-5. **Clarify and iterate** — for unresolved ambiguity in iterative mode, return state and ask targeted questions.
+- persona: security-expert
+  summary: Migrate, but only after threat-modeling attack surface.
+  confidence: high
 
-Three modes:
+- persona: product-owner
+  summary: Don't migrate this quarter; Q3 has in-flight payment features.
+  confidence: medium
 
-- **`persona_consult`** — single persona, structured output.
-- **`council_consult`** — multi-persona with synthesis.
-- **`council_discuss`** — multi-turn iterative discussion with session state.
+synthesis:
+  agreements:
+  - Migration is the right direction.
 
-Persona contracts (`skills/personas/PERSONAS.md`) define each persona's frame: senior-architect (structural causes), senior-developer (implementation-level causes), qa-engineer (test/data/environment), security-engineer (attack surface), product-owner (scope/value/timing), scrum-master (velocity/capacity), tech-lead (technical complexity/dependencies), devils-advocate (challenges the obvious).
+  conflicts:
+  - Dimension: TIMING
+    | Option | Benefit | Risk | Who Favors |
+    | --- | --- | --- | --- |
+    | Now | Unblock roadmap | High incident risk | architect, security |
+    | Q4 | Lower risk | Deferred complexity | product-owner |
 
-Quality checks every response:
+  risks_tradeoffs:
+  - Q3 conflict with payments work is the load-bearing tradeoff.
 
-- Recommendations tie to stated constraints.
-- Assumptions are separated from facts.
-- At least one concrete next step.
-- At least one explicit risk or tradeoff for non-trivial decisions.
-- Persona terminology is consistent with the contracts.
+  next_steps:
+  - Decide cutover quarter before scoping further.
+  - Threat-model attack surface regardless of timing.
+```
+
+### Iterative Multi-Turn Decision
+
+**Invocation**: `/council-iterative`
+```
+Run a council on Kubernetes adoption. I'll iterate.
+```
+
+**Turn 1**: Agent asks "What's your main constraint: cost, latency, or operational complexity?"  
+**Turn 2** (You answer): Agent consults council, surfaces conflict  
+**Turn 3** (Clarification): Agent narrows options based on constraint  
+**Turn 4** (Final): Agent delivers decision with roadmap
+
+## Tips for Best Results
+
+- **Pick the right agent.** Single persona for quick perspective; multi-persona for complex decisions; iterative for evolving constraints.
+- **Assemble deliberately.** Predefined groups work well (product-delivery-core, platform-and-reliability, etc.), but custom personas let you optimize.
+- **Always read the synthesis.** For multi-persona mode, synthesis is where the value lives. Skipping to one persona's advice defeats the point.
+- **Read agreements first.** In multi-persona output, agreements are strong evidence; conflicts are the live questions. Most users skim to conflicts and miss what everyone already agrees on.
+- **Match depth to stakes.** `brief` for routine decisions (faster), `standard` for important ones, `deep` for high-stakes (more thorough).
+- **Use iterative mode when uncertain.** If you're not sure what you're optimizing for, let the agents ask clarifying questions over 3–5 turns.
+
+## Anti-Patterns
+
+What these agents will NOT do, or what to avoid:
+
+- ❌ **Don't expect final decisions.** The agents surface tradeoffs and risks; you decide. They won't say "do X" with no qualification.
+- ❌ **Don't use for pure factual lookup.** "What's the syntax for a Postgres index?" doesn't need a council. Use agents for decisions with tradeoffs.
+- ❌ **Don't run with thin context.** Garbage in = structured garbage out. A two-sentence problem and no background gives personas nothing to push on. Invest 5 min in problem statement.
+- ❌ **Don't skip assumptions.** Every response includes assumptions explicitly. Ignoring them turns advice into "trust me"—and assumptions are usually where real disagreement lives.
+- ❌ **Don't use multi-persona when you need single expertise.** If you just want one expert's view, use council-single-persona (faster and clearer).
+- ❌ **Don't skip the synthesis in multi-persona mode.** If you read 6 personas' opinions but no synthesis, you've missed the point.
+
+## Architecture
+
+Each agent handles one decision-making mode:
+
+**`council-single-persona`**
+- Purpose: Single expert perspective
+- Workflow: Load persona contract → apply lens → generate response → return with assumptions
+- Output: Summary, advice, assumptions, questions, next steps, confidence
+- Time: 10–15 min
+
+**`council-multi-persona`**
+- Purpose: Multi-expert synthesis
+- Workflow: Consult each persona → synthesize → identify agreements/conflicts/risks → return structured synthesis
+- Output: Individual responses + synthesis (agreements/conflicts/risks/next steps)
+- Time: 20–30 min
+
+**`council-iterative`**
+- Purpose: Multi-turn iterative refinement
+- Workflow: Initialize session → ask clarification → consult council → apply conflict protocol → return state
+- Output: Per-turn refinement with session state, decision tables for conflicts
+- Time: 30–60 min (3–5 turns)
+
+All agents load persona contracts from `skills/personas/PERSONAS.md`.
+
+## Quality Guarantees
+
+Every response includes:
+
+✅ **Recommendations** tied to stated constraints  
+✅ **Assumptions** separated from facts  
+✅ **Concrete next steps** (not vague)  
+✅ **Explicit risks/tradeoffs** for non-trivial decisions  
+✅ **Confidence level** with justification  
+✅ **Persona-specific reasoning** using their Decision Lens  
 
 ## FAQ
 
-**Q: What's the default panel for `council_consult`?**
-A: It depends on the invoking skill (e.g., issue-triage uses senior-architect + senior-developer + qa-engineer + devils-advocate). For direct invocation, the skill picks based on the problem type or asks.
+**Q: Which agent should I use?**
+A: Single persona if you want one expert; multi-persona if you need synthesis; iterative if constraints evolve.
 
 **Q: Can I add custom personas?**
-A: Yes — invoke `council_define_personas` with the persona spec. The override applies for the session.
+A: Yes. Add a persona contract file to `skills/personas/` and reference it (e.g., "Convene with my-custom-persona and senior-architect").
 
 **Q: How is this different from grill-me?**
-A: Grill-me interrogates *you* one question at a time to surface gaps in your plan. Clarity-council collects multiple opinions on a decision and synthesizes. Different shapes; different inputs.
+A: `grill-me` interrogates *you* one question at a time. These agents collect multiple expert opinions and synthesize them.
 
-**Q: Is the iterative mode worth the overhead?**
-A: For meaty multi-faceted decisions (architecture, hiring, vendor selection), yes. For one-shot questions, single-persona or council_consult is faster.
+**Q: Why structured markdown output?**
+A: Other skills and dashboards can parse the output reliably. Consistent structure means downstream tools don't break.
 
-**Q: Why YAML-style markdown for the output?**
-A: Other skills consume the output programmatically. Consistent structure means a downstream skill can extract the synthesis section without parsing free-form prose.
+**Q: What about the old skill references in issue-triage, etc.?**
+A: Those skills have been updated to invoke the agents directly (council-single-persona, council-multi-persona, council-iterative).
 
-## Related skills
+## Related Agents
 
-- **[issue-triage](../issue-triage/)** — Phase 5 invokes this skill with senior-architect + senior-developer + qa-engineer + devils-advocate.
-- **[issue-feature-breakdown](../issue-feature-breakdown/)** — Phase 2 invokes this with senior-architect + product-owner + tech-lead + qa-engineer + devils-advocate.
-- **[issue-estimate-sp](../issue-estimate-sp/)** — Step 4 invokes this with scrum-master + tech-lead + senior-developer + qa-engineer for scrum-poker estimation.
-- **[grill-me](../grill-me/)** — for stress-testing your own plan one question at a time, instead of getting other voices.
-- **[grill-with-docs](../grill-with-docs/)** — like grill-me but anchored against project documentation.
+The three Council agents work together:
+- Use **council-single-persona** when you need one expert's perspective
+- Escalate to **council-multi-persona** when you need multiple viewpoints
+- Use **council-iterative** when exploring a decision space
+
+Related skills that invoke council agents:
+- **[issue-triage](../issue-triage/)** — Invokes council-multi-persona for root-cause analysis
+- **[issue-feature-breakdown](../issue-feature-breakdown/)** — Invokes council-multi-persona for impact assessment
+- **[issue-estimate-sp](../issue-estimate-sp/)** — Invokes council-multi-persona for scrum-poker estimation
+- **[grill-me](../grill-me/)** — Stress-tests *your* plan; council agents collect *other* opinions
+- **[grill-with-docs](../grill-with-docs/)** — Like grill-me but anchored to project docs
 
 ## Files
 
-- **[SKILL.md](SKILL.md)** — Skill entry point (mode classification, output templates, quality checks)
-- **[EXAMPLES.md](EXAMPLES.md)** — Input-only invocation examples for all three modes
-- **[skills/](skills/)** — Mode implementations (`persona_consult.md`, `council_consult.md`, `council_discuss.md`, `council_define_personas.md`) and persona contracts (`personas/PERSONAS.md`)
+- **[SKILL.md](SKILL.md)** — Skill entry point and agent routing
+- **[EXAMPLES.md](EXAMPLES.md)** — Invocation examples for all three agents
+- **[skills/personas/PERSONAS.md](skills/personas/PERSONAS.md)** — Full persona index
+- **[skills/personas/GROUPS.md](skills/personas/GROUPS.md)** — Pre-made persona panels
+- **[skills/personas/](skills/personas/)** — Individual persona contracts (35+ personas)
+
+**Agent documentation** (in agents/00-council/):
+- `council-single-persona.md`
+- `council-multi-persona.md`
+- `council-iterative.md`
+- `README.md` — Comprehensive guide
+- `INDEX.md` — Quick navigation

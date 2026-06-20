@@ -320,10 +320,33 @@ After the weekly note is saved, regenerate the monthly rollup. Full template, we
 
 ### 9. Propose focus blocks
 
-**Delegate to `clarity-council` (personal-assistant persona).** This step doesn't author the block list inline — invoke the `clarity-council` skill via `Skill` with `persona_consult` mode, persona pinned to `personal-assistant`, and pass:
+**Delegate to `council-single-persona` agent (personal-assistant persona).** This step doesn't author the block list inline — invoke the agent via `Skill`:
 
-- **user_problem:** *"Propose focus blocks for today that pull the highest-leverage open actions into the free time available."*
-- **context:** the open action items from step 6 (carry-over + new), the prep needs from step 4 (high-stakes meetings without buffer), and the free blocks (≥45 min) from step 4. Include the no-lunch flag if set.
+**Invocation**:
+```
+Agent: council-single-persona
+
+As a personal-assistant, propose focus blocks for today that pull the highest-leverage 
+open actions into the free time available.
+
+Open actions:
+[carry-over items from prior days]
+[new action items from today]
+
+Today's prep needs:
+[high-stakes meetings without buffer time]
+
+Free blocks (≥45 min):
+[list of available time slots]
+
+Constraints:
+[no-lunch flag if set, other scheduling rules]
+
+Output:
+- Prioritized focus blocks with start/end times
+- For each block: which action item(s) it covers, why this priority order
+- Confidence level for each recommendation
+```
 - **desired_outcome:** *"A ranked focus-block proposal table — `Time | Block | Purpose` — where each row obeys the persona's Output Requirements: names a concrete next action, ties to a deadline or commitment, and surfaces any dependency (e.g. blocked-by-person, awaiting-input). Apply the Eisenhower Matrix to rank urgent × important. Protect attention: do not propose more than 3 blocks before lunch, and do not break a long contiguous free block into fragments unless the underlying actions genuinely call for it."*
 - **constraints:** `[only propose blocks that fit into existing free time (no overlapping meetings), preserve at least one 45-minute uninterrupted window if the day allows it, do not auto-fill every gap]`
 - **depth:** `brief`

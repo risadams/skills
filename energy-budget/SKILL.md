@@ -26,15 +26,35 @@ This is spoon-theory accounting: count the load in advance, find the items that 
 
 ## Lens: personal-assistant + psychologist
 
-For non-trivial budgets (more than 4 items, anything spanning >6 hours, anything the user is already wound up about), invoke `clarity-council` via `Skill` in `council_consult` mode with personas `[personal-assistant, psychologist]`:
+For non-trivial budgets (more than 4 items, anything spanning >6 hours, anything the user is already wound up about), invoke the `council-multi-persona` agent via `Skill` with personas `[personal-assistant, psychologist]`:
 
-- **user_problem:** *"Score today's load. Identify burnout risk. Suggest what to defer. Account for sensory load and social load, not just clock time."*
-- **context:** the items + the user's baseline capacity + what's already happened today + any known sensitivities (sensory, social, recovery from prior days).
-- **desired_outcome:** *"A load-scored table, a total against capacity, a verdict (safe / tight / over), and 1-3 concrete defer suggestions ranked by what saves the most energy."*
-- **constraints:** `[do not moralize about productivity, do not assume neurotypical recovery, distinguish duration cost from intensity cost]`
-- **depth:** `brief`.
+**Invocation**:
+```
+Agent: council-multi-persona
 
-For trivial check-ins (3-4 items), skip the council and score inline.
+Score today's load and suggest defers. Account for sensory and social load, not just clock time.
+
+Today's items:
+[list: meetings, deliverables, errands, social activities]
+
+User's baseline today:
+[already drained / normal / unusually rested]
+
+Known sensitivities:
+[sensory, social, recovery patterns]
+
+Non-negotiable items:
+[what cannot be deferred]
+
+Output:
+- Load-scored table (duration × intensity = cost per item)
+- Total cost vs. capacity (safe / tight / over)
+- Burnout-risk flags (specific items and why)
+- 1–3 concrete defer suggestions, ranked by energy saved
+- Recovery plan if day is tight or over
+```
+
+For trivial check-ins (3–4 items), skip the agent call and score inline.
 
 ## When to activate
 

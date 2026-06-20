@@ -1,162 +1,285 @@
-# Clarity Council Input Examples
+# Clarity Council: Agent Invocation Examples
 
-This file contains input-only examples for invoking all major Clarity Council functionality.
+This file shows how to invoke the three Council agents in different scenarios.
 
 ## 1. Single Persona Consultation
 
-Use when you want one focused perspective.
+Use `council-single-persona` when you want focused advice from one expert.
 
-```json
-{
-  "skill": "persona_consult",
-  "persona_name": "Senior Developer",
-  "user_problem": "Our CI pipeline takes 45 minutes and blocks releases.",
-  "context": "Monorepo with 12 services, mostly TypeScript, GitHub Actions.",
-  "desired_outcome": "Reduce average pipeline time to under 15 minutes.",
-  "constraints": [
-    "No paid CI add-ons this quarter",
-    "Must keep current required security scans"
-  ],
-  "depth": "standard"
-}
+### Example 1a: Quick Development Decision
+
 ```
+Invocation: /council-single-persona
+
+As a senior-developer, our CI pipeline takes 45 minutes and blocks releases.
+Context: Monorepo with 12 services, mostly TypeScript, GitHub Actions.
+Goal: Reduce average pipeline time to under 15 minutes.
+Constraints: No paid CI add-ons this quarter; must keep security scans.
+```
+
+**What happens**: Agent loads senior-developer persona, applies their implementation-focused lens, generates advice on pipeline optimization.
+
+### Example 1b: Quick Architecture Opinion
+
+```
+Invocation: /council-single-persona
+
+As a security-expert, what's our biggest risk in the current auth model?
+Context: We're using session tokens stored in cookies without rotation.
+Constraints: Must maintain backward compatibility with existing mobile clients.
+```
+
+**What happens**: Agent loads security-expert persona, evaluates attack surface, returns risk assessment with next steps.
+
+---
 
 ## 2. Multi-Persona Council Synthesis
 
-Use when you need tradeoffs across roles.
+Use `council-multi-persona` when you need tradeoffs across multiple roles.
 
-```json
-{
-  "skill": "council_consult",
-  "user_problem": "Should we move from a modular monolith to microservices this year?",
-  "context": "B2B SaaS, 20 engineers, rapid feature growth, occasional scaling pain.",
-  "desired_outcome": "Choose architecture strategy for next 12 months.",
-  "constraints": [
-    "Cannot pause roadmap delivery",
-    "Platform team has only 3 engineers"
-  ],
-  "selected_personas": [
-    "Senior Architect",
-    "Financial Officer",
-    "DevOps Engineer",
-    "Product Owner",
-    "Devil’s Advocate"
-  ],
-  "depth": "deep"
-}
+### Example 2a: Architecture Decision with Synthesis
+
+```
+Invocation: /council-multi-persona
+
+Should we move from a modular monolith to microservices this year?
+
+Context: B2B SaaS, 20 engineers, rapid feature growth, occasional scaling pain.
+Goal: Choose architecture strategy for next 12 months.
+
+Constraints:
+- Cannot pause roadmap delivery
+- Platform team has only 3 engineers
+
+Personas:
+- senior-architect
+- financial-officer
+- devops-engineer
+- product-owner
+- devils-advocate
+
+Depth: deep
 ```
 
-## 3. Define Persona Overrides
+**What happens**: 
+1. Agent loads all 5 personas
+2. Consults each with the problem
+3. Produces individual responses
+4. Synthesizes: agreements (all want to improve), conflicts (timing and risk tolerance differ), risks (team capacity)
+5. Returns structured output with conflict decision tables
 
-Use when you want to tune persona behavior for the current session/workspace.
+### Example 2b: Using Pre-Made Persona Groups
 
-```json
-{
-  "skill": "council_define_personas",
-  "overrides": {
-    "Financial Officer": {
-      "focus": [
-        "cash flow impact",
-        "run-rate stability",
-        "payback period"
-      ],
-      "constraints": [
-        "Flag recommendations with payback period over 12 months"
-      ]
-    },
-    "Product Owner": {
-      "soul": "Outcome-focused product strategist balancing customer value and delivery speed.",
-      "constraints": [
-        "Prefer options that preserve roadmap commitments in current quarter"
-      ]
-    }
-  }
-}
+```
+Invocation: /council-multi-persona
+
+Convene a council on adopting TypeScript codebase-wide.
+
+Context: Current project is JavaScript, team has 2 TypeScript experts and 8 novices.
+Desired outcome: Go/no-go recommendation for Q3.
+
+Use group: technical-focus
+
+Depth: standard
 ```
 
-## 4. Multi-Turn Discussion (Initial Turn)
+**What happens**: Agent expands `technical-focus` group into: senior-architect, senior-developer, tech-lead, qa-engineer, devops-engineer, security-expert, devils-advocate. Consults all, synthesizes.
 
-Use to begin an iterative clarification session.
+### Example 2c: Custom Persona Selection
 
-```json
-{
-  "skill": "council_discuss",
-  "requestText": "We need to cut cloud costs by 30% without hurting reliability. What should we do first?",
-  "personasRequested": [
-    "Ops Architect",
-    "DevOps Engineer",
-    "Financial Officer",
-    "Security Expert"
-  ]
-}
+```
+Invocation: /council-multi-persona
+
+Should we hire or build a custom payment processor integration?
+
+Context: 
+- Current payment system is industry-standard but rigid
+- We have 4 payment-specific features we need
+- Budget for either approach is $200k
+
+Personas:
+- financial-officer
+- product-owner
+- senior-architect
+- senior-developer
+- devils-advocate
+
+Depth: standard
 ```
 
-## 5. Multi-Turn Discussion (Follow-Up Turn)
+**What happens**: Agent consults 5 personas on build-vs-buy decision, surfaces where cost/time/complexity differ.
 
-Use when continuing a prior discussion with returned state.
+---
 
-```json
-{
-  "skill": "council_discuss",
-  "requestText": "Continue from prior turn.",
-  "state": {
-    "sessionId": "cc-session-2026-04-30-01",
-    "turn": 2,
-    "history": [
-      "Turn 1: Council requested baseline cost breakdown by service and environment.",
-      "Turn 2: User provided top 10 cost drivers and current SLO targets."
-    ]
-  },
-  "answer": "We can rightsize Kubernetes nodes and reduce staging uptime from 24/7 to business hours."
-}
+## 3. Iterative Multi-Turn Decisions
+
+Use `council-iterative` when constraints or priorities evolve during the discussion.
+
+### Example 3a: Team Restructuring Decision
+
+```
+Invocation: /council-iterative
+
+Run a council on how to restructure our team to improve deployment frequency.
+I'll iterate.
 ```
 
-## 6. Entry-Point Invocation Via SKILL.md Routing
+**Turn 1 (Agent asks clarification)**:
+"What's your primary goal: reducing time-to-market, improving reliability, or reducing toil?"
 
-Use when your harness invokes the root skill and lets it classify the mode.
+**Turn 1 (You respond)**:
+"Reducing time-to-market primarily; we're shipping every 2 weeks but need weekly or daily."
 
-```json
-{
-  "skill": "clarity-council",
-  "user_problem": "We are debating SOC 2 Type II now vs next year while scaling enterprise sales.",
-  "context": "Security team is 2 people; sales pipeline has 6 enterprise deals.",
-  "desired_outcome": "Decide timing and scope with clear risks.",
-  "constraints": [
-    "No major hiring before Q4",
-    "Avoid roadmap slip for existing contractual milestones"
-  ],
-  "selected_personas": [
-    "Security Expert",
-    "Financial Officer",
-    "Growth Strategist",
-    "Tech Lead"
-  ],
-  "depth": "standard"
-}
+**Turn 2 (Agent consults council)**:
+Invokes council-multi-persona with goal locked in. Returns responses from product-owner, tech-lead, scrum-master, culture-lead.
+
+**Turn 2 (Agent surfaces conflict)**:
+"Conflict: Product-owner wants 4 cross-functional teams (fast shipping). Tech-lead wants 2 teams + shared platform (lower complexity). Which prioritizes more?"
+
+**Turn 2 (You respond)**:
+"Cross-functional teams; we accept some duplication for speed."
+
+**Turn 3 (Agent refines)**:
+Returns updated recommendation with roadmap for 4-team restructure.
+
 ```
 
-## 7. Minimal Inputs (Fast Start)
+### Example 3b: Kubernetes Adoption with Evolving Constraints
 
-Use smallest valid payload for quick checks.
+```
+Invocation: /council-iterative
 
-```json
-{
-  "skill": "persona_consult",
-  "persona_name": "Tech Lead",
-  "user_problem": "Our sprint spillover is increasing."
-}
+Run a council on Kubernetes adoption for our infrastructure.
+I'm uncertain what we're optimizing for; please help me figure it out.
 ```
 
-```json
-{
-  "skill": "council_consult",
-  "user_problem": "Should we sunset our legacy API version this quarter?"
-}
+**Turn 1**: Agent asks "Is your main constraint: cost, operational complexity, or scalability?"  
+**You (Turn 1)**: "Operational complexity—we're spending 40% of ops time on deploy issues."  
+**Turn 2**: Agent consults council. "Consensus: adopt Kubernetes. Conflict: learning curve vs. payoff. Worth investing 8 weeks for team ramp-up?"  
+**You (Turn 2)**: "Yes, we can afford 8 weeks."  
+**Turn 3**: Agent finalizes recommendation: "Adopt Kubernetes. Hire consultant for 4-week engagement. Plan 12-week full migration starting Q3."
+
+---
+
+## 4. Invoking from Other Skills/Agents
+
+When other skills need expert perspectives, they invoke Council agents programmatically.
+
+### Example 4a: issue-triage Invoking Council
+
+```
+Skill: issue-triage
+Step: Root-cause analysis
+
+Invokes: council-multi-persona
+  problem: "Why is our login flow occasionally timing out?"
+  context: [issue details, logs, reproduction steps]
+  selected_personas: ["senior-developer", "qa-engineer", "devops-engineer", "devils-advocate"]
+  depth: "standard"
+
+Returns: Structured synthesis with root-cause hypotheses, conflict on server vs. client issue
 ```
 
-```json
-{
-  "skill": "council_discuss",
-  "requestText": "Help us choose between speed and reliability improvements this month."
-}
+### Example 4b: issue-feature-breakdown Invoking Council
+
 ```
+Skill: issue-feature-breakdown
+Step: Impact assessment
+
+Invokes: council-multi-persona
+  problem: "What's the impact of adding real-time notifications to our app?"
+  context: [feature description, user cohort size, existing infrastructure]
+  selected_personas: ["product-owner", "senior-architect", "devops-engineer", "qa-engineer"]
+  depth: "deep"
+
+Returns: Structured synthesis with impact analysis, architectural tradeoffs, resource estimates
+```
+
+### Example 4c: issue-estimate-sp Invoking Council
+
+```
+Skill: issue-estimate-sp
+Step: Scrum poker estimation
+
+Invokes: council-multi-persona
+  problem: "How many story points for this feature?"
+  context: [feature description, acceptance criteria, team velocity baseline]
+  selected_personas: ["scrum-master", "tech-lead", "senior-developer", "qa-engineer"]
+  depth: "standard"
+
+Returns: Structured estimates with confidence levels, team consensus on complexity
+```
+
+---
+
+## 5. Common Patterns
+
+### Pattern 1: "I Need One Quick Opinion"
+
+```
+→ Use council-single-persona
+→ 10–15 minutes
+→ One persona, clear recommendation
+```
+
+### Pattern 2: "Multiple Teams Disagree on This"
+
+```
+→ Use council-multi-persona
+→ 20–30 minutes
+→ Get each perspective, see where they disagree
+→ Identify decision options and tradeoffs
+```
+
+### Pattern 3: "I Don't Know What I'm Optimizing For"
+
+```
+→ Use council-iterative
+→ 30–60 minutes (3–5 turns)
+→ Agent asks clarifying questions
+→ Recommendation refines with each turn
+```
+
+### Pattern 4: "Another Skill Needs Expert Input"
+
+```
+→ Other skill invokes council agent programmatically
+→ Passes problem, context, requested personas
+→ Gets structured response for downstream processing
+```
+
+---
+
+## Input Fields Reference
+
+All three agents accept these optional fields:
+
+| Field | Description | Example |
+| --- | --- | --- |
+| `problem` | The decision or question | "Should we adopt Kubernetes?" |
+| `context` | Background and constraints | "20 engineers, rapid growth" |
+| `personas` | List of personas to consult | ["senior-architect", "product-owner"] |
+| `persona_groups` | Pre-made persona panels | ["technical-focus"] |
+| `depth` | Thoroughness level | "brief" / "standard" / "deep" |
+| `desired_outcome` | Format or focus | "Go/no-go recommendation" |
+| `constraints` | Hard limits | ["Budget under $100k"] |
+
+**Iterative-only fields**:
+
+| Field | Description |
+| --- | --- |
+| `sessionId` | Carries forward across turns |
+| `turn` | Current turn number |
+| `history` | Prior turn summaries |
+| `answer` | User's response to previous clarification |
+
+---
+
+## Next Steps
+
+See the full agent documentation:
+- `agents/00-council/council-single-persona.md`
+- `agents/00-council/council-multi-persona.md`
+- `agents/00-council/council-iterative.md`
+- `agents/00-council/README.md` — Comprehensive guide
+- `agents/00-council/INDEX.md` — Decision tree
