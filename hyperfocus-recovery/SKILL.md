@@ -16,6 +16,10 @@ allowed-tools:
   - Read
   - Grep
   - Glob
+related-skills:
+  - task-initiation
+loop-eligible: false
+
 ---
 
 # Hyperfocus Recovery
@@ -91,3 +95,4 @@ If the user wants to start fresh and abandon what they were doing, offer that as
 - Do not summarize for the sake of summarizing; if there's nothing to recover, say so plainly
 - Do not commit anything, stash anything, or modify state — recovery is read-only
 - Do not encourage or validate — the user wants their context back, not a pep talk
+

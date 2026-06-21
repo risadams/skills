@@ -4,6 +4,10 @@ description: Interact with Obsidian vaults using the Obsidian CLI to read, creat
 related-agents:
   - cli-developer
   - tooling-engineer
+related-skills:
+  - obsidian-vault
+loop-eligible: false
+
 ---
 
 # Obsidian CLI
@@ -107,3 +111,4 @@ obsidian dev:mobile on
 ```
 
 Run `obsidian help` to see additional developer commands including CDP and debugger controls.
+

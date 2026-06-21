@@ -20,6 +20,10 @@ allowed-tools:
   - Read
   - Glob
   - Skill
+related-skills:
+  - energy-budget
+loop-eligible: true
+
 ---
 
 # Daily Briefing
@@ -383,3 +387,4 @@ Present the returned proposal table to the user, then ask via `AskUserQuestion` 
 ## Optional deep-dive
 
 If the user asks for more detail on a specific thread, use `outlook_get_conversation(message_id=...)` to pull the full thread.
+

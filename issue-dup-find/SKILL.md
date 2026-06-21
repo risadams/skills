@@ -19,6 +19,8 @@ related-agents:
   - AskUserQuestion
   - mcp__atlassian__jira_search
   - mcp__atlassian__jira_get_issue
+loop-eligible: false
+
 ---
 
 # Issue Duplicate Finder
@@ -140,3 +142,4 @@ After the report is delivered (and any user-requested file write is confirmed co
 - Do not invent reasons. If the only signal is "same component", say so plainly and rate it Low.
 - Cap reported pairs per anchor at 5. If more candidates score High, list the top 5 and add a footnote: `_+N additional medium/low matches suppressed._`
 - The default project key is read from memory (`reference_jira_default_project.md`). Always confirm the resolved project key in the report header so the user can verify scope.
+

@@ -22,6 +22,11 @@ allowed-tools:
   - mcp__gitlab-mcp__list_pipelines
   - mcp__gitlab-mcp__get_pipeline
   - mcp__gitlab-mcp__list_group_projects
+related-skills:
+  - sprint-snapshot
+  - clarity-council
+loop-eligible: true
+
 ---
 
 # Daily Standup Prep
@@ -307,3 +312,4 @@ This skill writes into and reads from the user's Obsidian vault. When any vault-
 | `obsidian-cli` | Use for property/task queries, frontmatter inspection, and any CLI-driven vault operation that `Read` + `Glob` cannot do cheaply. |
 | `obsidian-bases` | Use when the user wants a dashboard `.base` file (e.g. "show me all standups for Pyrite this sprint", "which team members had no activity in the last 5 standups"). Don't hand-author `.base` YAML. |
 | `obsidian-canvas` | Use if the user wants a visual board summarizing the standup (e.g. a sprint-overview canvas with linked standup notes as nodes). |
+

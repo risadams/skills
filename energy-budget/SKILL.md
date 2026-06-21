@@ -16,6 +16,10 @@ allowed-tools:
   - Read
   - AskUserQuestion
   - Skill
+related-skills:
+  - clarity-council
+loop-eligible: false
+
 ---
 
 # Energy Budget
@@ -127,3 +131,4 @@ If the day is tight or over even after suggested defers, one sentence on **what 
 - Do not suggest deferring non-negotiables (you asked, listen to the answer)
 - Do not produce a daily plan — that's not what this skill is for
 - Do not tell them to meditate
+

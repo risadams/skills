@@ -27,18 +27,109 @@ name: skill-name
 description: >
   When to trigger this skill. Use "when user says X" or "Use when Y."
   Keep to 1-2 sentences.
-version: 2.5.1          # optional
-license: MIT            # optional
-compatibility: claude-code opencode  # optional
-allowed-tools:          # optional
+version: 2.5.1                         # optional
+license: MIT                           # optional
+compatibility: claude-code opencode    # optional
+allowed-tools:                         # optional
   - Read
   - Write
-related-agents:         # optional — related agents that can use this skill
+related-agents:                        # optional — agents that can use this skill
   - agent-name
   - another-agent
+related-skills:                        # optional — other skills this skill uses
+  - skill-a
+  - skill-b
+loop-eligible: true                    # optional — true if can run via /loop
+recurrence-hint: daily                 # optional — daily/weekly/on-demand (if loop-eligible=true)
 ```
 
-**Note:** The `related-agents` field should only include agents that actually exist and have clear workflow connections to this skill. See **[INTEGRATION.md](INTEGRATION.md)** for guidance.
+**Note:** The `related-agents` and `related-skills` fields should only include items that actually exist and have clear workflow connections to this skill. See **[INTEGRATION.md](INTEGRATION.md)** for guidance.
+
+## Extended Skill Format: Loop Method
+
+The Loop Method adds optional frontmatter fields and markdown sections to enable:
+1. **Cross-skill delegation:** Declare which other skills this skill uses
+2. **Quality loops:** Self-evaluate output before returning
+3. **Recurring execution:** Document how this skill runs via `/loop`
+
+### New Frontmatter Fields
+
+| Field | Type | Rules | Example |
+|-------|------|-------|---------|
+| `related-skills` | Array[string] | 0-6 skill names; must exist | `related-skills: [grill-me, clarity-council]` |
+| `loop-eligible` | Boolean | True if can run recurring; false otherwise | `loop-eligible: true` |
+| `recurrence-hint` | Enum | `daily`, `weekly`, `on-demand`, `none`; required if loop-eligible=true | `recurrence-hint: daily` |
+
+### Quality Loop Section
+
+Add an optional "Quality Loop" section to your SKILL.md (after main instructions):
+
+```markdown
+## Quality Loop
+
+This skill evaluates its output before returning it.
+
+1. **Generate initial output** — Follow main workflow
+2. **Self-evaluate** — Against criteria:
+   - Completeness: All required fields present?
+   - Accuracy: Facts grounded in input?
+   - Actionability: Can user take next step?
+   - Format: Matches template?
+3. **Loop condition** — If ≥2 criteria fail, refine and re-evaluate
+4. **Exit** — When all pass OR max 2 iterations reached
+```
+
+### Delegation Map Section
+
+Add an optional "Delegation Map" section to your SKILL.md (at end of file):
+
+```markdown
+## Delegation Map
+
+| User Need | Delegate Via | Parameters |
+|-----------|---|---|
+| [Use case] | Invoke `[skill]` with ... | [params] |
+| [Use case] | Agent `[agent]` for... | [context] |
+
+**Loop eligibility:** [true/false]  
+**Recurrence:** [daily/weekly/on-demand]  
+**Example:** `/loop 1d /[skill-name] --param value`
+```
+
+### Examples
+
+#### good-morning (Orchestration Skill)
+
+```yaml
+---
+name: good-morning
+related-skills: [sprint-snapshot, daily-standup-prep, daily-briefing]
+related-agents: [scrum-master, project-manager]
+loop-eligible: false  # Orchestrator doesn't recur alone; components do
+---
+```
+
+#### sprint-snapshot (Repeating Skill)
+
+```yaml
+---
+name: sprint-snapshot
+related-skills: [sprint-plan, sprint-review, daily-standup-prep]
+related-agents: [scrum-master, project-manager]
+loop-eligible: true
+recurrence-hint: weekly  # Usually run once per sprint, or on-demand
+---
+```
+
+### Validation Rules
+
+- **Existence check:** related-skills and related-agents must be real
+- **No self-reference**
+- **No circular chains:** A→B→C→A rejected
+- **Type correctness:** Skill names only in related-skills; agent names only in related-agents
+- **Recurrence consistency:** loop-eligible=true requires recurrence-hint
+
+Validation is performed by the agents linting script when the ecosystem is synchronized.
 
 ## Skills inventory
 
@@ -112,3 +203,5 @@ related-agents:         # optional — related agents that can use this skill
 - The `SKILL.md` at the folder root is the entry point. Never move it.
 - Supporting files (formats, deep-dive modules, persona contracts) stay in the same folder.
 - Update the skill's README if the workflow or reference files change.
+- **Loop Method:** If you add related-skills, related-agents, or a Delegation Map, update the frontmatter + add the section to SKILL.md.
+- If the skill can now run recurring, add `loop-eligible: true` and `recurrence-hint: [frequency]`.

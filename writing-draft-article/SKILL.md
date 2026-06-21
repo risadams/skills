@@ -5,6 +5,12 @@ related-agents:
   - content-quality-editor
   - technical-writer
   - documentation-engineer
+related-skills:
+  - writing-shape
+  - writing-beats
+  - clarity-council
+loop-eligible: false
+
 ---
 
 # Draft Article — From Idea to Publishable
@@ -239,3 +245,4 @@ Recommended naming:
 - Long-form: `essay.md` or `longform-{topic}.md`
 
 The final file should be publication-ready — no placeholders, no "[TBD]", no "[add citation]". Everything that needs to be there, is.
+

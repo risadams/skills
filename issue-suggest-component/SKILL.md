@@ -32,6 +32,8 @@ related-agents:
   - mcp__gitlab-mcp__get_merge_request
   - mcp__gitlab-mcp__list_commits
   - mcp__gitlab-mcp__search_project_code
+loop-eligible: false
+
 ---
 
 # Issue Suggest Component
@@ -217,3 +219,4 @@ If the run aborted with an error, **always keep** the scratch folder and surface
 | "Looks like it might fit" with no concrete signal | **Insufficient — do not suggest** |
 
 When in doubt, suggest nothing. The cost of an over-tagged ticket is higher than an under-tagged one because it pollutes filters and reports.
+

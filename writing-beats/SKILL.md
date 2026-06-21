@@ -4,6 +4,11 @@ description: Shape an article as a journey of beats, choose-your-own-adventure s
 related-agents:
   - content-quality-editor
   - technical-writer
+related-skills:
+  - writing-shape
+  - writing-fragments
+loop-eligible: false
+
 ---
 
 <what-to-do>
@@ -102,3 +107,4 @@ When you sense an ending is near, say so: "we could end on the last beat, or add
 - Imposing a fixed structure (intro/body/conclusion). The structure is whatever the journey turns out to be.
 
 </supporting-info>
+

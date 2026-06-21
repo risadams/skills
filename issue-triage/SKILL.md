@@ -33,6 +33,11 @@ related-agents:
   - mcp__gitlab-mcp__list_merge_requests
   - mcp__gitlab-mcp__get_merge_request
   - mcp__gitlab-mcp__search_project_code
+related-skills:
+  - codebase-explain
+  - clarity-council
+loop-eligible: false
+
 ---
 
 # Issue Triage
@@ -233,3 +238,4 @@ If the comment fails to post (permissions, network, etc.), surface the error and
 - Do not propose code edits. The output is a hypothesis + path, not a fix.
 - If the input is ambiguous (no Jira key and no clear description), ask once for clarification — do not invent an issue to triage.
 - Time-box signal gathering. Five recent commits beats fifty; one close sibling ticket beats ten weak matches.
+

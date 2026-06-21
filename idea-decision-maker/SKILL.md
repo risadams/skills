@@ -19,6 +19,10 @@ allowed-tools:
 related-agents:
   - product-manager
   - business-analyst
+related-skills:
+  - clarity-council
+loop-eligible: false
+
 ---
 
 # Idea Decision Maker
@@ -91,3 +95,4 @@ Until that trigger fires, the decision is closed.
 - Do not list considerations they should weigh — weigh them yourself
 - Do not encourage the user to "trust their gut" — their gut sent them here
 - Do not introduce a third option unless it's obviously dominant — that adds paralysis
+

@@ -16,6 +16,10 @@ allowed-tools:
   - Read
   - AskUserQuestion
   - Skill
+related-skills:
+  - clarity-council
+loop-eligible: false
+
 ---
 
 # Meeting Decompression
@@ -88,3 +92,4 @@ One paragraph. Acknowledge the cognitive load of the meeting. Name what the user
 - Do not produce a meeting summary as if the user is a stenographer — they were *in* the meeting
 - Do not lecture about masking or burnout — the user is decompressing, not learning
 - Do not add new action items the user didn't actually commit to
+

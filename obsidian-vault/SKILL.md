@@ -3,6 +3,11 @@ name: obsidian-vault
 description: Search, create, and manage notes in the Obsidian vault with wikilinks and index notes. Use when user wants to find, create, or organize notes in Obsidian.
 related-agents:
   - documentation-engineer
+related-skills:
+  - obsidian-markdown
+  - obsidian-canvas
+loop-eligible: false
+
 ---
 
 # Obsidian Vault
@@ -126,3 +131,4 @@ Review the low-count tags against the high-count list. Tags used only once or tw
 ```bash
 grep -rn '#suspicioustag' "$VAULT" --include="*.md"
 ```
+

@@ -10,6 +10,10 @@ related-agents:
   - product-manager
   - scrum-master
   - business-analyst
+related-skills:
+  - clarity-council
+loop-eligible: false
+
 ---
 
 # Feature Breakdown
@@ -98,3 +102,4 @@ Iterate until the user approves.
 - **Read-only**: Never call `jira_create_issue`, `jira_update_issue`, `jira_transition_issue`, or any write operation on Jira or Confluence.
 - Do not create files on disk unless the user explicitly asks to save the breakdown.
 - If the Jira ticket key cannot be found, stop and ask the user to provide a valid key.
+

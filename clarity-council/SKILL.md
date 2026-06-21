@@ -5,6 +5,11 @@ related-agents:
   - council-single-persona
   - council-multi-persona
   - council-iterative
+related-skills:
+  - grill-me
+  - idea-generate
+loop-eligible: false
+recurrence-hint: on-demand
 ---
 
 # Clarity Council: Agent-Based System

@@ -5,6 +5,10 @@ related-agents:
   - refactoring-specialist
   - legacy-modernizer
   - architect-reviewer
+related-skills:
+  - codebase-improve-architecture
+loop-eligible: false
+
 ---
 
 This skill will be invoked when the user wants to create a refactor request. You should go through the steps below. You may skip steps if you don't consider them necessary.
@@ -70,3 +74,4 @@ A description of the things that are out of scope for this refactor.
 Any further notes about the refactor.
 
 </refactor-plan-template>
+

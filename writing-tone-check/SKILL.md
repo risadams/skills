@@ -15,6 +15,10 @@ allowed-tools:
   - Read
   - AskUserQuestion
   - Skill
+related-skills:
+  - writing-humanize
+loop-eligible: false
+
 ---
 
 # Tone Check
@@ -68,3 +72,4 @@ Add rows for relationship-specific reads ("reads as challenging authority", "rea
 - Do not strip directness in the name of politeness — sometimes blunt is correct
 - Do not assume the worst about the recipient
 - Do not add emojis to suggested rewrites unless the original used them
+

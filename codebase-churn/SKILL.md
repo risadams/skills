@@ -5,6 +5,8 @@ related-agents:
   - code-reviewer
   - performance-engineer
   - refactoring-specialist
+loop-eligible: false
+
 ---
 
 # codebase-churn
@@ -60,3 +62,4 @@ Open `churn-treemap.svg` in a browser. Hover any tile for path, commit count, li
 - Renames are normalized (`{old => new}` collapses to the new path).
 - Binary files are skipped (git reports `-` for their numstat).
 - Squarified treemap layout (Bruls/Huijing/van Wijk) keeps tile aspect ratios near 1.
+

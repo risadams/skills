@@ -3,6 +3,11 @@ name: writing-shape
 description: Take a markdown file of raw material and shape it into an article through a conversational session — drafting candidate openings, growing the piece paragraph by paragraph, arguing about format (lists, tables, callouts, quotes) at each step. Use when the user has a pile of notes, fragments, or a rough draft and wants help turning it into something publishable.
 related-agents:
   - content-quality-editor
+related-skills:
+  - writing-draft-article
+  - writing-beats
+loop-eligible: false
+
 ---
 
 <what-to-do>
@@ -64,3 +69,4 @@ Append to the article file as each block is agreed. Re-read the file from disk b
 - Publishing, formatting for a specific platform, or adding frontmatter the user didn't ask for.
 
 </supporting-info>
+

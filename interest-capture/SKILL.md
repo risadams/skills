@@ -17,6 +17,10 @@ allowed-tools:
   - Write
   - Skill
   - Bash
+related-skills:
+  - task-initiation
+loop-eligible: false
+
 ---
 
 # Interest Capture
@@ -107,3 +111,4 @@ That's it. No "great idea!", no expansion, no follow-up questions. Send them bac
 - Do not offer to research or expand
 - Do not produce a summary back to the user — the note *is* the summary
 - Do not invoke `clarity-council` — latency kills the use case
+

@@ -3,6 +3,10 @@ name: obsidian-charts
 description: Build interactive charts in Obsidian notes using the Charts plugin (phibr0/obsidian-charts). Renders Chart.js bar/line/pie/doughnut/radar/polarArea via `chart` codeblocks, can pull data straight from a markdown table by block ID (cross-file supported), and can render from a Dataview query via `window.renderChart`. Use when the user wants to chart, plot, graph, or visualize data sitting in their Obsidian notes — including tables, frontmatter values, Dataview/Dataviewjs results, or hand-written series — or mentions "obsidian charts", "chart codeblock", "renderChart", or "chart from table".
 related-agents:
   - data-analyst
+related-skills:
+  - obsidian-bases
+loop-eligible: false
+
 ---
 
 # Obsidian Charts Skill
@@ -123,3 +127,4 @@ See [REFERENCE.md](REFERENCE.md) for the full parameter list, `renderChart` API,
 - **Date axis flat / unsorted** — set `time: day` (or `month`/`year`) so the plugin treats labels as dates.
 - **`renderChart` undefined** — the Charts plugin isn't enabled, or the codeblock isn't `dataviewjs` (it must be — `dataview` won't work for JS).
 - **Series with mismatched lengths** — every `data` array must match `labels.length` (pad with `null` for missing points).
+

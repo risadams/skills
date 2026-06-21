@@ -16,6 +16,10 @@ allowed-tools:
   - Read
   - AskUserQuestion
   - Skill
+related-skills:
+  - clarity-council
+loop-eligible: false
+
 ---
 
 # Time Reality Check
@@ -92,3 +96,4 @@ If the user only reads one line, this is it: a flat declarative sentence with th
 - Do not assume the user can't focus; some tasks genuinely take 20 minutes
 - Do not skip the gut estimate question — you need their number to calibrate against
 - Do not lecture about time blindness; the user knows
+

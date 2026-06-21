@@ -8,6 +8,10 @@ description: >
 related-agents:
   - devops-engineer
   - git-workflow-manager
+related-skills:
+  - branch-resolve-conflicts
+loop-eligible: false
+
 ---
 
 # Branch Rebase
@@ -227,3 +231,4 @@ List any files that were auto-resolved during conflict resolution so the user ca
 - **Never amend or squash** commits during this workflow.
 - If anything unexpected happens (network errors, lock files, hook failures), stop and report rather than retrying destructively.
 - Prefer `git rebase --abort` over leaving the repo in a broken state.
+

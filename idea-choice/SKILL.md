@@ -4,6 +4,11 @@ description: Weigh one or more ideas/concepts with a structured pros-and-cons an
 related-agents:
   - product-manager
   - business-analyst
+related-skills:
+  - clarity-council
+  - idea-generate
+loop-eligible: false
+
 ---
 
 # Idea Choice
@@ -92,3 +97,4 @@ For multiple ideas, append:
 - **Use the same criteria across ideas.** When comparing, make the council apply the same lens to each — otherwise the totals aren't comparable.
 - **Flag any con with weight ≥ 16.** These are deal-breakers in disguise. Even a "Go" recommendation should call them out.
 - **Don't recommend "Needs more analysis" as a cop-out.** Only use it when the totals truly are inside ±10 *and* no single item is heavy enough to tip the call. If one idea has a 20-weight con and the net is +5, that's "Go with caveats," not "Needs more analysis."
+

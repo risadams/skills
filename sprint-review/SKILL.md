@@ -12,6 +12,11 @@ allowed-tools:
   - Bash
   - AskUserQuestion
   - Skill
+related-skills:
+  - sprint-snapshot
+  - clarity-council
+loop-eligible: true
+
 ---
 
 # Sprint Review Report
@@ -265,3 +270,4 @@ Saved:            [sprint-review.md](Scrum Teams/Aurora/Scrum 📅/INC 28/Sprint
 | `obsidian-vault` | Use for batch wikilink verification (>15 names). |
 | `obsidian-bases` | Use when the user wants a `.base` aggregating reviews across an INC — e.g. "show commitment ratio + carry-over per sprint for Aurora this PI". Strong forecasting input. |
 | `daily-standup-prep` | Pattern parent for vault-write conventions and identity matching. |
+

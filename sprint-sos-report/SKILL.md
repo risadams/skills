@@ -12,6 +12,11 @@ allowed-tools:
   - Bash
   - AskUserQuestion
   - Skill
+related-skills:
+  - sprint-snapshot
+  - sprint-plan
+loop-eligible: false
+
 ---
 
 # Sprint Scrum-of-Scrums Report
@@ -234,3 +239,4 @@ Saved:        [sos-week 2.md](Scrum Teams/Aurora/Scrum 📅/INC 28/Sprint 2/repo
 | `obsidian-vault` | Use for batch wikilink verification (>15 names). |
 | `obsidian-bases` | Use when the user wants a `.base` aggregating SoS reports across sprints — e.g. "show wedge consumption + scope-creep verdicts per sprint for Aurora this PI". |
 | `daily-standup-prep` | Pattern parent for vault-write conventions and identity matching. |
+

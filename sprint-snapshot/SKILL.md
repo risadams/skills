@@ -4,6 +4,12 @@ description: Capture a point-in-time snapshot of a scrum team's current sprint b
 related-agents:
   - scrum-master
   - project-manager
+related-skills:
+  - sprint-plan
+  - sprint-review
+  - daily-standup-prep
+loop-eligible: true
+recurrence-hint: weekly
 allowed-tools:
   - Read
   - Write

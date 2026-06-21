@@ -3,6 +3,10 @@ name: writing-fragments
 description: Grilling session that mines the user for fragments — heterogeneous nuggets of writing (claims, vignettes, sharp sentences, half-thoughts) — and appends them to a single document as raw material for a future article. Use when the user wants to develop ideas before imposing structure, or mentions "fragments", "ideate", or "raw material" for writing.
 related-agents:
   - content-quality-editor
+related-skills:
+  - writing-shape
+loop-eligible: false
+
 ---
 
 <what-to-do>
@@ -95,3 +99,4 @@ The user can say "cut the last one", "rewrite that one sharper", "merge those tw
 If the user is ready for any of that, the session is over and a different tool takes over. Do not name or recommend that tool — just stop.
 
 </supporting-info>
+

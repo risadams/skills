@@ -20,6 +20,11 @@ allowed-tools:
 related-agents:
   - content-quality-editor
   - ai-writing-auditor
+related-skills:
+  - writing-tone-check
+  - writing-shape
+loop-eligible: false
+recurrence-hint: on-demand
 ---
 
 # Humanizer: Remove AI Writing Patterns

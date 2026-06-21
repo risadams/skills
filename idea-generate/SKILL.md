@@ -4,6 +4,11 @@ description: Helps users generate, refine, and stress-test ideas from loose topi
 related-agents:
   - product-manager
   - business-analyst
+related-skills:
+  - clarity-council
+  - grill-me
+loop-eligible: false
+recurrence-hint: on-demand
 ---
 
 # Idea Generate

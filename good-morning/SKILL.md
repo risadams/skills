@@ -4,6 +4,12 @@ description: Morning kickoff wrapper that runs sprint-snapshot (daily tag), dail
 related-agents:
   - scrum-master
   - project-manager
+related-skills:
+  - sprint-snapshot
+  - daily-standup-prep
+  - daily-briefing
+loop-eligible: false
+recurrence-hint: daily
 allowed-tools:
   - Skill
   - AskUserQuestion

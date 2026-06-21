@@ -18,6 +18,10 @@ related-agents:
   - project-manager
   - mcp__atlassian__confluence_get_page
   - mcp__atlassian__jira_get_epic_issues
+related-skills:
+  - clarity-council
+loop-eligible: false
+
 ---
 
 # Estimate
@@ -152,3 +156,4 @@ comparable ticket from REFERENCE_DATA.md if one exists.}
 > **Note:** This estimate was generated from historical data and persona analysis.
 > It has not been written to the ticket. Discuss with your team before committing.
 ```
+

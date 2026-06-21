@@ -14,6 +14,10 @@ allowed-tools:
   - Read
   - AskUserQuestion
   - Skill
+related-skills:
+  - clarity-council
+loop-eligible: false
+
 ---
 
 # Rejection Sensitivity Check
@@ -91,3 +95,4 @@ One-sentence rationale.
 - Do not over-validate the worst case to seem supportive
 - Do not assume the sender is neurotypical or has emotional fluency
 - Do not recommend a response that requires emotional labor the user can't afford right now
+

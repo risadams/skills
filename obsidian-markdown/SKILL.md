@@ -4,6 +4,11 @@ description: Create and edit Obsidian Flavored Markdown with wikilinks, embeds, 
 related-agents:
   - documentation-engineer
   - technical-writer
+related-skills:
+  - obsidian-vault
+  - obsidian-canvas
+loop-eligible: false
+
 ---
 
 # Obsidian Flavored Markdown Skill
@@ -197,3 +202,4 @@ Reviewed in [[Meeting Notes 2024-01-10#Decisions]].
 - [Embed files](https://help.obsidian.md/embeds)
 - [Callouts](https://help.obsidian.md/callouts)
 - [Properties](https://help.obsidian.md/properties)
+

@@ -14,6 +14,10 @@ related-agents:
   - code-reviewer
   - git-workflow-manager
   - refactoring-specialist
+related-skills:
+  - branch-rebase
+loop-eligible: false
+
 ---
 
 ## Workflow
@@ -34,3 +38,4 @@ related-agents:
 
 - **[README](README.md)** — Full guide with examples and best practices
 - **[examples.md](examples.md)** — Annotated conflict resolution walkthroughs
+

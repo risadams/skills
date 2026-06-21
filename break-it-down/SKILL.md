@@ -13,6 +13,8 @@ allowed-tools:
   - Read
   - AskUserQuestion
   - Skill
+loop-eligible: false
+
 ---
 
 # Break It Down
@@ -158,3 +160,4 @@ Include:
 - Do not use jargon in your analysis -- the whole point is plain language
 - Do not skip sections, even if a section would be brief
 - Do not add emojis
+

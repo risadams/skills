@@ -13,6 +13,8 @@ related-agents:
 compatibility: claude-code opencode
 allowed-tools:
   - AskUserQuestion
+loop-eligible: false
+
 ---
 
 # Task Initiation
@@ -73,3 +75,4 @@ When the user comes back and says "done":
 - Do not invoke `clarity-council` — speed matters more than depth here
 - Do not ask "are you sure?" — they came here to be unstuck, not interrogated
 - Do not write a breakdown — that's a different skill
+
