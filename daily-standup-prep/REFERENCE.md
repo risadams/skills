@@ -35,10 +35,10 @@ Verbatim port of `Find-TeamMemberMatch` from `D:\powershell-scripting\src\module
 | :- | :--- | :--- | :--- |
 | 1 | Email exact | `email.trim().lower() == member.Email.trim().lower()` | Highest-confidence; used by Jira/GitLab/Confluence/Git. |
 | 2 | Full name exact | `displayName == member.FullName` | Case-sensitive — matches PS behavior. |
-| 3 | Jira name exact | `displayName == member.JiraName` | e.g. `"Adams, Chris"`. |
+| 3 | Jira name exact | `displayName == member.JiraName` | e.g. `"Rivera, Alex"`. |
 | 4 | Structured "Last, First" | `displayName ~= /^([^,]+),\s*([^,\s]+)/` then match `LastName == parsedLast AND (FirstName == parsedFirst OR DisplayFirstName == parsedFirst)` | Handles Jira display variants. |
 | 5a | First + last component | Split displayName on whitespace; member's first part `==` displayName's first part AND member's last part `==` displayName's last part | Handles middle initials. |
-| 5b | First + last initial | Same as 5a but compare only `lastPart[0]` | Handles "Chris A" → Chris Adams. |
+| 5b | First + last initial | Same as 5a but compare only `lastPart[0]` | Handles "Alex R" → Alex Rivera. |
 | 6 | First name / alias | If displayName **does not** contain `, `: match if `FirstName == displayName OR DisplayFirstName == displayName OR displayName ∈ Aliases (case-insensitive)` | Single-token names. |
 | 7 | Partial substring | If displayName **does not** contain `, `: `member.FullName LIKE *displayName* OR displayName LIKE *member.FirstName*` | Lowest confidence; last resort before username. |
 | 8 | Username pattern | `member.FullName.replace(/\s+/, '.') == username OR member.FullName.replace(/\s+/, '') == username` | GitLab/external usernames. |
@@ -74,7 +74,7 @@ Spec — exact reproduction of `Format-JiraKanbanForMermaid`:
 flowchart
 
     subgraph Blocked ["Blocked"]
-        SC2_1234["SC2-1234<br/>Truncated summary…<br/>👤 Chris Adams"]
+        SC2_1234["SC2-1234<br/>Truncated summary…<br/>👤 Alex Rivera"]
     end
 
     subgraph Ready ["Ready"]

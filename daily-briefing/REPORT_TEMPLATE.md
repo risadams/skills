@@ -56,6 +56,8 @@ date: YYYY-MM-DD
 
 Render today's schedule as a Mermaid gantt so the day's shape is visible at a glance. Use `HH-mm` for `dateFormat` (Mermaid quirk — dashes, not colons) and `%H:%M` for `axisFormat`. Insert one `:HH-mm, {{duration}}mm` task per meeting in the **Tasks** section, and one per free block in the **Breaks** section. The `START` / `END` markers anchor the chart to the working day; adjust the start/end times and the START duration (`{{end_minus_start}}mm`) to match the user's actual workday.
 
+> ⛔ **NEVER put a colon (`:`) inside a gantt task label.** Mermaid splits each task line on the *first* colon to separate the label from the `:HH-mm, NNmm` metadata. A label like `Gap 09:00-10:00 :09-00, 60mm` makes Mermaid try to parse `00-10:00 :09-00` as a date and the whole diagram fails with `Error parsing Mermaid diagram! Invalid date`. This also bites `Lunch gap 12:00-15:00`, `Seals (1:1)`, etc. **Write time ranges in labels with periods or `to`** — `Gap 09.00-10.00`, `Lunch gap 12–3`, `Seals (1-1)` — and keep the only colon on the line in front of the `HH-mm` metadata. Same rule for any colon (ratios, times, `note:`); strip it from the label.
+
 ```mermaid
 gantt
     dateFormat  HH-mm

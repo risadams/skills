@@ -173,7 +173,7 @@ Issue card content uses the `JIRA:KEY` convention so each card auto-links to the
 
 JIRA:PROJ-1234
 
-**Assignee:** Chris Adams
+**Assignee:** Alex Rivera
 **Points:** 3
 **Type:** Story
 ```
