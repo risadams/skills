@@ -157,6 +157,7 @@ Validation is performed by the agents linting script when the ecosystem is synch
 | idea-decision-maker | Force a pick between options to defeat analysis paralysis. Council: senior-architect + devils-advocate + personal-assistant vote, majority wins. Fast counterpart to idea-choice — use when the user needs a verdict, not a written record (was: `decision-breaker`) |
 | idea-generate | Generate and refine ideas from loose topics using Divergence (council) and Convergence (grill) workflows |
 | interest-capture | Fast capture for hyperfixations so they don't derail today's work but aren't lost. Files into Obsidian inbox, returns user to task |
+| issue-draft-release-notes | Draft a customer-facing release note for a Jira ticket from ticket context + related GitLab MR changes; clarity-council quality pass (technical-writer + product-owner + customer-advocate); read-only with opt-in to post as a Jira comment or set a Release Notes field |
 | issue-dup-find | Scan open Jira issues (default project from memory) for likely duplicates → markdown report with probability + reason (read-only) |
 | issue-estimate-sp | Story point estimation via Jira context + scrum-poker council session (read-only) |
 | issue-feature-breakdown | Read-only Jira/Confluence context gathering + council analysis → actionable breakdown |
