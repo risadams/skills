@@ -218,12 +218,12 @@ A "fresh signal" means *new evidence in the current briefing window that the ite
 
 For each item with `age ≥ 3`, scan the current briefing window's data (the emails + calendar from step 2) and mark a fresh signal present **only if at least one of these is true**:
 
-- **Email — direct correspondence.** An email *from* the named person *to* the user (`To:` line, not `Cc:`), OR an email *from* the user *to* the named person, in the briefing window. Mentions of the person in third-party emails (e.g., Viz High Fives, intern intro thread, recap minutes) do **not** count.
+- **Email — direct correspondence.** An email *from* the named person *to* the user (`To:` line, not `Cc:`), OR an email *from* the user *to* the named person, in the briefing window. Mentions of the person in third-party emails (e.g., memos, intern intro thread, recap minutes) do **not** count.
 - **Email — explicit subject match.** An email subject in the window contains the Jira ticket key, MR number, or document name from the item's signature. PR labels (`gatekeeper_ready` etc.) on a *different* MR do not count.
 - **Calendar — scheduled touchpoint.** A meeting in the briefing window or today's calendar lists the named person as an attendee AND is in a context plausibly related to the item (1:1, project sync, review). Standing all-hands meetings (CCB, knowledge transfer, morning coffee) do **not** count.
 - **Jira/MR — direct activity.** A `[JIRA]` or `gitlab` notification email in the window references the exact ticket key or MR number in the item's signature. Activity on adjacent tickets does **not** count.
 
-If none of the above are true, **fresh signal is absent**. Do not stretch — the failure mode is over-eager freshness inference (e.g., "Patel is in the Viz High Fives email therefore the Patel SC2-23240 question is still live"). Tangential presence is not freshness.
+If none of the above are true, **fresh signal is absent**. Do not stretch — the failure mode is over-eager freshness inference (e.g., "Patel is in the feedback request email therefore the Patel SC2-23240 question is still live"). Tangential presence is not freshness.
 
 **Phase C — Decide.**
 
@@ -387,4 +387,3 @@ Present the returned proposal table to the user, then ask via `AskUserQuestion` 
 ## Optional deep-dive
 
 If the user asks for more detail on a specific thread, use `outlook_get_conversation(message_id=...)` to pull the full thread.
-
